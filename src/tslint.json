@@ -1,0 +1,126 @@
+{
+    "extends": "tslint:recommended",
+    "rulesDirectory": [
+        "tslint-consistent-codestyle"
+    ],
+    "rules": {
+        "naming-convention": [
+            true,
+            {
+                "type": "default",
+                "format": [
+                    "camelCase",
+                    "PascalCase"
+                ],
+                "leadingUnderscore": "forbid",
+                "trailingUnderscore": "forbid"
+            },
+            {
+                "type": "variable",
+                "modifiers": "const",
+                "leadingUnderscore": "allow",
+                "format": [
+                    "camelCase",
+                    "UPPER_CASE",
+                    "PascalCase"
+                ],
+                "prefix": [
+                    "_",
+                    ""
+                ]
+            },
+            {
+                "type": "parameter",
+                "leadingUnderscore": "allow",
+                "final": true
+            },
+            {
+                "type": "member",
+                "modifiers": "private",
+                "leadingUnderscore": "allow"
+            },
+            {
+                "type": "member",
+                "modifiers": "protected",
+                "leadingUnderscore": "allow"
+            },
+            {
+                "type": "property",
+                "leadingUnderscore": "allow"
+            },
+            {
+                "type": "property",
+                "modifiers": [
+                    "public",
+                    "static"
+                ],
+                "format": "UPPER_CASE"
+            },
+            {
+                "type": "property",
+                "modifiers": [
+                    "private",
+                    "static"
+                ],
+                "format": "UPPER_CASE"
+            },
+            {
+                "type": "property",
+                "modifiers": "public",
+                "format": ""
+            },
+            {
+                "type": "type",
+                "format": "PascalCase"
+            },
+            {
+                "type": "genericTypeParameter",
+                "prefix": "T"
+            },
+            {
+                "type": "enumMember",
+                "format": "UPPER_CASE"
+            }
+        ],
+        "space-before-function-paren": [
+            true,
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "variable-name": false,
+        "curly": true,
+        "max-line-length": [
+            true,
+            140
+        ],
+        "no-console": false,
+        "quotemark": [
+            true,
+            "single",
+            "avoid-escape"
+        ],
+        "interface-name": [
+            true,
+            "never-prefix"
+        ],
+        "no-namespace": false,
+        "trailing-comma": [
+            true,
+            {
+                "multiline": "always",
+                "singleline": "never"
+            }
+        ],
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
+        "no-empty": false,
+        "no-bitwise": false,
+        "ban-types": false
+    },
+    "jsRules": {
+        "curly": true
+    }
+}

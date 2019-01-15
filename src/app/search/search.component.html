@@ -1,0 +1,14 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <div fxFlex.sm="60" fxFlex.md="40" fxFlex="20">
+    <form class="full-width">
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <mat-form-field class="full-width">
+          <mat-label>Music Search</mat-label>
+          <input matInput type="search" maxlength="32" placeholder="author, title, etc.">
+        </mat-form-field>
+        <button mat-icon-button type="submit" (click)="search(searchText)"><mat-icon>search</mat-icon></button>
+      </div>
+    </form>
+  </div>
+</div>
+<button (click)="search('test')">PUSH ME!</button>
