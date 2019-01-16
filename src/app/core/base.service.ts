@@ -5,6 +5,7 @@ import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
 @Injectable()
 export class BaseService {
     protected http: AxiosInstance;
+
     constructor(protected config: Config) {
         this.http = axios.create({baseURL: config.centerBaseUrl} as AxiosRequestConfig);
     }

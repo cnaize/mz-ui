@@ -3,10 +3,19 @@ import {NgModule} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule} from '@angular/material';
+import {
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+} from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {SearchComponent} from './search/search.component';
 import {SearchModule} from './search/search.module';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,10 +26,14 @@ import {SearchModule} from './search/search.module';
       BrowserModule,
       FlexLayoutModule,
       BrowserAnimationsModule,
+      FormsModule,
       MatFormFieldModule,
       MatInputModule,
       MatIconModule,
       MatButtonModule,
+      MatCardModule,
+      MatListModule,
+      MatProgressSpinnerModule,
       SearchModule,
   ],
   providers: [

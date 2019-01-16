@@ -1,14 +1,40 @@
 <div fxLayout="row" fxLayoutAlign="center center">
-  <div fxFlex.sm="60" fxFlex.md="40" fxFlex="20">
-    <form class="full-width">
-      <div fxLayout="row" fxLayoutAlign="center center">
-        <mat-form-field class="full-width">
-          <mat-label>Music Search</mat-label>
-          <input matInput type="search" maxlength="32" placeholder="author, title, etc.">
-        </mat-form-field>
-        <button mat-icon-button type="submit" (click)="search(searchText)"><mat-icon>search</mat-icon></button>
-      </div>
-    </form>
+  <div fxFlex.xs="80" fxFlex.sm="60" fxFlex.md="50" fxFlex="40">
+    <mat-card>
+      <mat-card-title>
+        <audio controls class="full-width">
+          <source>
+          Your browser does not support the audio element.
+        </audio>
+      </mat-card-title>
+      <mat-card-subtitle>
+        <form class="full-width">
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field class="full-width">
+              <mat-label>Music Search</mat-label>
+              <input matInput type="search" maxlength="64" placeholder="author, title, etc."
+                     #searchTextField name="searchTextField">
+            </mat-form-field>
+            <button mat-icon-button (click)="addSearchRequest(searchTextField.value)"><mat-icon>search</mat-icon></button>
+          </div>
+        </form>
+      </mat-card-subtitle>
+      <mat-card-content>
+        <mat-list>
+          <mat-divider></mat-divider>
+          <mat-list-item *ngFor="let item of searchResponseList.items" (click)="test()">
+            <div mat-line fxLayout="row" fxLayoutAlign="space-between center">
+              <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon matListIcon>play_circle_filled</mat-icon>
+                <span class="media-title" mat-line>{{item.filename}}</span>
+              </div>
+              <span class="media-owner" mat-line>{{item.owner.username}}</span>
+            </div>
+            <span mat-line>{{item.filepath}}</span>
+            <mat-divider></mat-divider>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>
-<button (click)="search('test')">PUSH ME!</button>

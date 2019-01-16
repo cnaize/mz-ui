@@ -1,0 +1,13 @@
+@import '../../reggae';
+
+.full-width {
+    width: 100%;
+}
+
+.media-title {
+    color: mat-color($reggae-primary);
+}
+
+.media-owner {
+    color: mat-color($reggae-accent);
+}
