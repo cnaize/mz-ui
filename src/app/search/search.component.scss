@@ -5,9 +5,19 @@
 }
 
 .media-title {
+    font-size: 1.2em !important;
     color: mat-color($reggae-primary);
 }
 
 .media-owner {
+    font-size: 1.2em !important;
     color: mat-color($reggae-accent);
+}
+
+.head-name {
+    font-size: 0.9em !important;
+}
+
+.head-path {
+    font-size: 0.8em !important;
 }

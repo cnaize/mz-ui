@@ -7,6 +7,6 @@ export class BaseService {
     protected http: AxiosInstance;
 
     constructor(protected config: Config) {
-        this.http = axios.create({baseURL: config.centerBaseUrl} as AxiosRequestConfig);
+        this.http = axios.create();
     }
 }

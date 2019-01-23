@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {SearchService} from './search.service';
 import {SearchRequest} from './model/search-request';
-import {AxiosPromise} from 'axios';
 import {SearchResponseList} from './model/search-response-list';
 import deepEqual = require('deep-equal'); // tslint:disable-line
+import {SearchResponse} from './model/search-response';
 
 @Component({
     selector: 'search-component',
@@ -12,11 +12,9 @@ import deepEqual = require('deep-equal'); // tslint:disable-line
 })
 
 export class SearchComponent {
-    private searchText: string = '';
+    private currentMedia: SearchResponse;
+    private searchRequest: SearchRequest;
     private searchResponseList: SearchResponseList;
-
-    private searchAddReqPromise: AxiosPromise<SearchRequest>;
-    private searchRespListPromise: AxiosPromise<SearchResponseList>;
 
     constructor(private searchService: SearchService) {
         this.searchResponseList = new SearchResponseList();
@@ -28,7 +26,7 @@ export class SearchComponent {
     private refreshLoop(): void {
         const self = this;
 
-        self.getSearchResponseList(self.searchText);
+        self.getSearchResponseList(self.searchRequest);
 
         setTimeout(() => {
             self.refreshLoop();
@@ -36,37 +34,32 @@ export class SearchComponent {
     }
 
     private addSearchRequest(text: string): void {
-        if (text === '' || text === this.searchText || this.searchAddReqPromise) {
+        if (text === '') {
             return;
         }
 
         const self = this;
-        self.searchAddReqPromise = self.searchService.addSearchRequest(text);
-
-        self.searchAddReqPromise
+        self.searchService.addSearchRequest(text)
             .then((r) => {
                 const res: SearchRequest = r.data;
-
                 if (r.status !== 201) {
                     console.log('Request AddSearchRequest failed: ' + r.statusText + ' - ' + res.error.str);
                     return;
                 }
+
                 self.searchResponseList.items = [];
-                self.searchText = text;
+                self.searchRequest = res;
             })
-            .catch((e) => console.log('Request AddSearchRequest failed: ' + e.toString()))
-            .then(self.searchAddReqPromise = null);
+            .catch((e) => console.log('Request AddSearchRequest failed: ' + e.toString()));
     }
 
-    private getSearchResponseList(text: string): void {
-        if (text === '' || this.searchRespListPromise) {
+    private getSearchResponseList(request: SearchRequest): void {
+        if (!request || request.text === '') {
             return;
         }
 
         const self = this;
-        self.searchRespListPromise = self.searchService.getSearchResponseList(text);
-
-        self.searchRespListPromise
+        self.searchService.getSearchResponseList(request.text)
             .then((r) => {
                 const res: SearchResponseList = r.data;
 
@@ -75,6 +68,9 @@ export class SearchComponent {
                     return;
                 }
                 if (!res.items) {
+                    return;
+                }
+                if (res.request.text !== request.text) {
                     return;
                 }
 
@@ -88,11 +84,6 @@ export class SearchComponent {
                 });
 
                 self.searchResponseList.items.push(...res.items);
-            })
-            .then(self.searchRespListPromise = null);
-    }
-
-    private test(): void {
-        console.log('HERE');
+            });
     }
 }
