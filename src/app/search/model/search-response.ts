@@ -1,11 +1,10 @@
 import {Error} from '../../core/model/error';
-import {User} from '../../core/model/user';
+import {Media} from './media';
+import {User} from '../../user/model/user';
 
 export class SearchResponse {
+    public id: number;
     public owner: User;
-    public author: string;
-    public title: string;
-    public filename: string;
-    public filepath: string;
+    public media: Media;
     public error: Error;
 }

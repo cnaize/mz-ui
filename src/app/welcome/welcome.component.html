@@ -1,0 +1,51 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+  <div fxFlex.xs="60" fxFlex.sm="50" fxFlex.md="40" fxFlex="30">
+    <mat-card>
+      <mat-card-title>
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <div fxLayout="auto">
+            <span [ngClass]="{selected: signMode === 'signin', 'can-select': signMode !== 'signin'}"
+                  (click)="signMode='signin'">Sign In</span>
+          </div>
+          <div fxLayout="auto">
+            <span>OR</span>
+          </div>
+          <div fxLayout="auto">
+            <span [ngClass]="{selected: signMode === 'signup', 'can-select': signMode !== 'signup'}"
+                  (click)="signMode='signup'">Sign Up</span>
+          </div>
+        </div>
+      </mat-card-title>
+      <mat-card-content>
+        <form class="sign-form">
+          <div fxLayout="column" fxLayoutAlign="start center">
+            <div fxFlex="auto">
+              <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input matInput name="username" [(ngModel)]="user.username" required>
+              </mat-form-field>
+            </div>
+            <div fxFlex="auto">
+              <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput type="password" name="password" [(ngModel)]="user.password" required>
+              </mat-form-field>
+            </div>
+            <div *ngIf="signMode === 'signup'" fxFlex="auto">
+              <mat-form-field>
+                <mat-label>Repeat Password</mat-label>
+                <input matInput type="password" name="password1" [(ngModel)]="user.password1" required>
+              </mat-form-field>
+            </div>
+            <div fxFlex="auto">
+              <button mat-stroked-button color="primary" disableRipple
+                      (click)="send()">
+                {{signMode === 'signin' ? 'Sign In' : 'Sign Up'}}
+              </button>
+            </div>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

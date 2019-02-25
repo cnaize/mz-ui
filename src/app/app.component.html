@@ -1,1 +1,21 @@
-<search-component></search-component>
+<div *ngIf="!authGuard.isAuthenticated()">
+  <welcome-component></welcome-component>
+</div>
+<div *ngIf="authGuard.isAuthenticated()" fxLayout="row" fxLayoutAlign="center center">
+  <div fxFlex.xs="80" fxFlex.sm="60" fxFlex.md="50" fxFlex="40">
+    <div id="content">
+      <mat-sidenav-container>
+        <mat-sidenav mode="side" opened disableClose>
+          Search
+          <br>
+          User
+          <br>
+          Settings
+        </mat-sidenav>
+        <mat-sidenav-content>
+          <router-outlet></router-outlet>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+    </div>
+  </div>
+</div>

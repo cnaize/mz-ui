@@ -1,44 +1,47 @@
-<div fxLayout="row" fxLayoutAlign="center center">
-  <div fxFlex.xs="80" fxFlex.sm="60" fxFlex.md="50" fxFlex="40">
-    <mat-card>
-      <mat-card-title>
-        <div *ngIf="currentMedia" fxLayout="row" fxLayoutAlign="space-between center">
-          <span class="media-title head-name">{{currentMedia.filename}}</span>
-          <span class="media-owner head-name">{{currentMedia.owner.username}}</span>
+<mat-card>
+  <mat-card-title>
+    <div *ngIf="currentMedia" fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="media-title head-name">{{currentMedia.media.name}}</span>
+      <span class="media-owner head-name">{{currentMedia.owner.username}}</span>
+    </div>
+    <audio controls class="full-width">
+      <source>
+      Your browser does not support the audio element.
+    </audio>
+  </mat-card-title>
+  <mat-card-subtitle>
+    <form class="full-width">
+      <div fxLayout="row" fxLayoutAlign="center center">
+        <mat-form-field class="full-width">
+          <mat-label>Music Search</mat-label>
+          <input matInput type="search" maxlength="64" placeholder="author, title, extension, etc."
+                 #searchTextField name="searchTextField">
+        </mat-form-field>
+        <button mat-icon-button (click)="addSearchRequest(searchTextField.value)"><mat-icon>search</mat-icon></button>
+      </div>
+    </form>
+  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-list>
+      <mat-divider></mat-divider>
+      <mat-list-item *ngFor="let item of searchResponseList.items" (click)="currentMedia = item">
+        <div mat-line fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon matListIcon>play_circle_filled</mat-icon>
+          <span class="media-title" mat-line>{{item.media.name}}</span>
         </div>
-        <audio controls class="full-width">
-          <source>
-          Your browser does not support the audio element.
-        </audio>
-      </mat-card-title>
-      <mat-card-subtitle>
-        <form class="full-width">
-          <div fxLayout="row" fxLayoutAlign="center center">
-            <mat-form-field class="full-width">
-              <mat-label>Music Search</mat-label>
-              <input matInput type="search" maxlength="64" placeholder="author, title, etc."
-                     #searchTextField name="searchTextField">
-            </mat-form-field>
-            <button mat-icon-button (click)="addSearchRequest(searchTextField.value)"><mat-icon>search</mat-icon></button>
-          </div>
-        </form>
-      </mat-card-subtitle>
-      <mat-card-content>
-        <mat-list>
-          <mat-divider></mat-divider>
-          <mat-list-item *ngFor="let item of searchResponseList.items" (click)="currentMedia = item">
-            <div mat-line fxLayout="row" fxLayoutAlign="space-between center">
-              <div fxLayout="row" fxLayoutAlign="start center">
-                <mat-icon matListIcon>play_circle_filled</mat-icon>
-                <span class="media-title" mat-line>{{item.filename}}</span>
-              </div>
-              <span class="media-owner" mat-line>{{item.owner.username}}</span>
-            </div>
-            <span mat-line>{{item.filepath}}</span>
-            <mat-divider></mat-divider>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
+        <span mat-line>/{{item.media.dir}}/{{item.media.name}}.{{item.media.ext}}</span>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+      <mat-list-item *ngIf="loadingResponseList">
+        <div mat-line fxLayout="row" fxLayoutAlign="center center">
+          <h5 class="load-item">Loading...</h5>
+        </div>
+      </mat-list-item>
+      <mat-list-item *ngIf="searchRequest && !loadingResponseList">
+        <div mat-line fxLayout="row" fxLayoutAlign="center center">
+          <button class="load-item" mat-fab (click)="getSearchResponseList()">Load More</button>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>

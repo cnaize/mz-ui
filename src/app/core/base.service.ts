@@ -7,6 +7,15 @@ export class BaseService {
     protected http: AxiosInstance;
 
     constructor(protected config: Config) {
-        this.http = axios.create();
+        const validStatusFn = (status: number) => {
+            if ((status >= 200 && status < 300) ||
+                (status === 400) ||
+                (status === 404) ||
+                (status === 409)) {
+                return true;
+            }
+            return false;
+        };
+        this.http = axios.create({validateStatus: validStatusFn});
     }
 }

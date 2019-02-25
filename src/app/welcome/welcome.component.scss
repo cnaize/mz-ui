@@ -1,0 +1,11 @@
+@import '../../reggae';
+
+.selected {
+  color: mat-color($reggae-primary);
+  text-decoration: underline;
+}
+
+.can-select {
+  color: mat-color($reggae-accent);
+  text-decoration: underline;
+}
