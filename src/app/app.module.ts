@@ -24,7 +24,7 @@ import {WelcomeModule} from './welcome/welcome.module';
 import {WelcomeComponent} from './welcome/welcome.component';
 import {Bag} from './core/bag';
 import {Player} from './core/player/player';
-import {PlayerComponent} from './player/player.component';
+import {PlayerComponent} from './parts/player/player.component';
 
 @NgModule({
   declarations: [

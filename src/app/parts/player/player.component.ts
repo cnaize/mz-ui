@@ -1,6 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {Bag} from '../core/bag';
-import {MatSlider} from '@angular/material';
+import {Bag} from '../../core/bag';
 
 @Component({
     selector: 'player',
@@ -12,11 +11,11 @@ import {MatSlider} from '@angular/material';
                     <mat-icon [inline]="true">{{bag.player.playing ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
                 </div>
             </div>
-            <div class="full-width" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="full-width" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
                 <div class="media-title">{{bag.player.currentMedia?.media.name}}</div>
                 <div class="media-owner">{{bag.player.currentMedia?.owner.username}}</div>
             </div>
-            <mat-slider class="volume-control" #volumeBar color="primary"></mat-slider>
+            <mat-slider class="volume-control" #volumeBar value="50" color="primary"></mat-slider>
         </div>
     `,
 })
