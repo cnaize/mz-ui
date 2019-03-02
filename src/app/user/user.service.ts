@@ -17,6 +17,7 @@ export class UserService extends BaseService {
 
     public setUser(user: User): void {
         console.log('Setting current user: ' + user.username);
+        this.addToken(user.token);
         this.user = user;
     }
 }

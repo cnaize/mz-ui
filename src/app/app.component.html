@@ -2,18 +2,24 @@
   <welcome-component></welcome-component>
 </div>
 <div *ngIf="authGuard.isAuthenticated()" fxLayout="row" fxLayoutAlign="center center">
-  <div fxFlex.xs="80" fxFlex.sm="60" fxFlex.md="50" fxFlex="40">
+  <div fxFlex.xs="100" fxFlex.sm="70" fxFlex.md="60" fxFlex="50">
+    <mat-card class="header">
+      <mat-card-content>
+        <player></player>
+      </mat-card-content>
+    </mat-card>
     <div id="content">
       <mat-sidenav-container>
         <mat-sidenav mode="side" opened disableClose>
-          Search
-          <br>
-          User
-          <br>
-          Settings
+          <div class="full-width" fxLayout="column" fxLayoutAlign="start center">
+            <button [ngClass]="{'tab-button': true, 'full-width': true, 'tab-selected': currentPage === 'SearchComponent'}"
+                    mat-stroked-button color="accent" disableRipple>Search</button>
+            <button [ngClass]="{'tab-button': true, 'full-width': true}"
+                    mat-stroked-button color="accent" disableRipple>Settings</button>
+          </div>
         </mat-sidenav>
         <mat-sidenav-content>
-          <router-outlet></router-outlet>
+          <router-outlet (activate)="onActivate($event)"></router-outlet>
         </mat-sidenav-content>
       </mat-sidenav-container>
     </div>

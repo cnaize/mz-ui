@@ -18,4 +18,10 @@ export class BaseService {
         };
         this.http = axios.create({validateStatus: validStatusFn});
     }
+
+    public addToken(token: string): void {
+        token = 'Bearer ' + token;
+        console.log('Adding token: ' + token);
+        this.http.defaults.headers.common.Authorization = token;
+    }
 }

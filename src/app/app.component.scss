@@ -1,0 +1,17 @@
+@import '../reggae';
+
+.full-width {
+    width: 100%;
+}
+
+.header {
+    background-color: black;
+}
+
+.tab-button {
+    border-radius: 0;
+}
+
+.tab-selected {
+    color: mat-color($reggae-primary) !important;
+}

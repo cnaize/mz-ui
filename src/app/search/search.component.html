@@ -1,32 +1,23 @@
 <mat-card>
   <mat-card-title>
-    <div *ngIf="currentMedia" fxLayout="row" fxLayoutAlign="space-between center">
-      <span class="media-title head-name">{{currentMedia.media.name}}</span>
-      <span class="media-owner head-name">{{currentMedia.owner.username}}</span>
-    </div>
-    <audio controls class="full-width">
-      <source>
-      Your browser does not support the audio element.
-    </audio>
-  </mat-card-title>
-  <mat-card-subtitle>
     <form class="full-width">
       <div fxLayout="row" fxLayoutAlign="center center">
         <mat-form-field class="full-width">
           <mat-label>Music Search</mat-label>
-          <input matInput type="search" maxlength="64" placeholder="author, title, extension, etc."
+          <input matInput type="search" maxlength="64" placeholder="Author, Title, Extension, etc."
                  #searchTextField name="searchTextField">
         </mat-form-field>
         <button mat-icon-button (click)="addSearchRequest(searchTextField.value)"><mat-icon>search</mat-icon></button>
       </div>
     </form>
-  </mat-card-subtitle>
+  </mat-card-title>
+  <mat-divider></mat-divider>
   <mat-card-content>
     <mat-list>
-      <mat-divider></mat-divider>
-      <mat-list-item *ngFor="let item of searchResponseList.items" (click)="currentMedia = item">
+      <mat-list-item *ngFor="let item of searchResponseList.items"
+                     (click)="bag.player.requestMedia(item)">
         <div mat-line fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon matListIcon>play_circle_filled</mat-icon>
+          <mat-icon matListIcon>{{deepEqual(item, bag.player.currentMedia) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
           <span class="media-title" mat-line>{{item.media.name}}</span>
         </div>
         <span mat-line>/{{item.media.dir}}/{{item.media.name}}.{{item.media.ext}}</span>
@@ -39,7 +30,7 @@
       </mat-list-item>
       <mat-list-item *ngIf="searchRequest && !loadingResponseList">
         <div mat-line fxLayout="row" fxLayoutAlign="center center">
-          <button class="load-item" mat-fab (click)="getSearchResponseList()">Load More</button>
+          <button class="load-item" mat-stroked-button color="primary" (click)="loadMoreSearchResponseList()">Load More</button>
         </div>
       </mat-list-item>
     </mat-list>

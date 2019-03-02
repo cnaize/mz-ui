@@ -1,0 +1,32 @@
+@import "../../reggae";
+
+.full-width {
+  width: 100%;
+}
+
+.player {
+  background-color: white;
+  border-radius: 10px;
+}
+
+.play-control {
+  font-size: 3.8em;
+}
+
+.volume-control {
+  min-width: 7em;
+}
+
+.mat-slider-horizontal {
+  width: 3em;
+}
+
+.media-title {
+  font-size: 1.1em !important;
+  color: mat-color($reggae-primary);
+}
+
+.media-owner {
+  font-size: 1.1em !important;
+  color: mat-color($reggae-accent);
+}

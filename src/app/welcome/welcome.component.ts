@@ -10,43 +10,44 @@ import {Router} from '@angular/router';
 })
 
 export class WelcomeComponent {
-    private user = new User();
-    private signMode = 'signin';
+    public user = new User();
 
     constructor(private router: Router, private userService: UserService) {
     }
 
-    private send(): void {
+    private signin(): void {
         const self = this;
 
-        if (self.signMode === 'signin') {
-            self.userService.signIn(self.user)
-                .then((r) => {
-                    const res: User = r.data;
-                    if (r.status !== 200) {
-                        return;
-                    }
+        self.userService.signIn(self.user)
+            .then((r) => {
+                const res: User = r.data;
+                if (r.status !== 200) {
+                    return;
+                }
 
-                    self.userService.setUser(res);
-                    self.router.navigate(['/search']);
-                })
-                .catch((e) => {
-                    console.log('Request SignIn failed: ' + e.toString());
-                });
-        } else {
-            self.userService.signUp(self.user)
-                .then((r) => {
-                    const res: User = r.data;
-                    if (r.status !== 201) {
-                        return;
-                    }
+                self.userService.setUser(res);
+                self.router.navigate(['/search']);
+            })
+            .catch((e) => {
+                console.log('Request SignIn failed: ' + e.toString());
+            });
+    }
 
-                    self.userService.setUser(res);
-                    self.router.navigate(['/search']);
-                })
-                .catch((e) => {
-                    console.log('Request SignUp failed: ' + e.toString());
-                });
-        }
+    private signup(): void {
+        const self = this;
+
+        self.userService.signUp(self.user)
+            .then((r) => {
+                const res: User = r.data;
+                if (r.status !== 201) {
+                    return;
+                }
+
+                self.userService.setUser(res);
+                self.router.navigate(['/search']);
+            })
+            .catch((e) => {
+                console.log('Request SignUp failed: ' + e.toString());
+            });
     }
 }

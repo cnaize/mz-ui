@@ -1,50 +1,43 @@
 <div fxLayout="row" fxLayoutAlign="center center">
-  <div fxFlex.xs="60" fxFlex.sm="50" fxFlex.md="40" fxFlex="30">
+  <div fxFlex.xs="80" fxFlex.sm="60" fxFlex.md="40" fxFlex="30">
     <mat-card>
-      <mat-card-title>
-        <div fxLayout="row" fxLayoutAlign="space-between start">
-          <div fxLayout="auto">
-            <span [ngClass]="{selected: signMode === 'signin', 'can-select': signMode !== 'signin'}"
-                  (click)="signMode='signin'">Sign In</span>
-          </div>
-          <div fxLayout="auto">
-            <span>OR</span>
-          </div>
-          <div fxLayout="auto">
-            <span [ngClass]="{selected: signMode === 'signup', 'can-select': signMode !== 'signup'}"
-                  (click)="signMode='signup'">Sign Up</span>
-          </div>
-        </div>
-      </mat-card-title>
       <mat-card-content>
-        <form class="sign-form">
-          <div fxLayout="column" fxLayoutAlign="start center">
-            <div fxFlex="auto">
-              <mat-form-field>
-                <mat-label>Username</mat-label>
-                <input matInput name="username" [(ngModel)]="user.username" required>
-              </mat-form-field>
-            </div>
-            <div fxFlex="auto">
-              <mat-form-field>
-                <mat-label>Password</mat-label>
-                <input matInput type="password" name="password" [(ngModel)]="user.password" required>
-              </mat-form-field>
-            </div>
-            <div *ngIf="signMode === 'signup'" fxFlex="auto">
-              <mat-form-field>
-                <mat-label>Repeat Password</mat-label>
-                <input matInput type="password" name="password1" [(ngModel)]="user.password1" required>
-              </mat-form-field>
-            </div>
-            <div fxFlex="auto">
-              <button mat-stroked-button color="primary" disableRipple
-                      (click)="send()">
-                {{signMode === 'signin' ? 'Sign In' : 'Sign Up'}}
-              </button>
-            </div>
-          </div>
-        </form>
+        <mat-tab-group mat-align-tabs="center">
+          <mat-tab label="Sign In">
+            <form class="sign-form">
+              <div fxLayout="column" fxLayoutAlign="start center">
+                <mat-form-field>
+                  <mat-label>Username</mat-label>
+                  <input matInput name="username" [(ngModel)]="user.username" required>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Password</mat-label>
+                  <input matInput type="password" name="password" [(ngModel)]="user.password" required>
+                </mat-form-field>
+                <button mat-stroked-button color="primary" disableRipple (click)="signin()">Sign In</button>
+              </div>
+            </form>
+          </mat-tab>
+          <mat-tab label="Sign Up">
+            <form class="sign-form">
+              <div fxLayout="column" fxLayoutAlign="start center">
+                <mat-form-field>
+                  <mat-label>Username</mat-label>
+                  <input matInput name="username" [(ngModel)]="user.username" required>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Password</mat-label>
+                  <input matInput type="password" name="password" [(ngModel)]="user.password" required>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Repeat Password</mat-label>
+                  <input matInput type="password" name="password1" [(ngModel)]="user.password1" required>
+                </mat-form-field>
+                <button mat-stroked-button color="primary" disableRipple (click)="signup()">Sign Up</button>
+              </div>
+            </form>
+          </mat-tab>
+        </mat-tab-group>
       </mat-card-content>
     </mat-card>
   </div>

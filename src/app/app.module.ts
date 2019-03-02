@@ -10,7 +10,7 @@ import {
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatProgressSpinnerModule, MatSidenavModule,
+    MatProgressSpinnerModule, MatSidenavModule, MatSliderModule, MatTabsModule,
 } from '@angular/material';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {SearchComponent} from './search/search.component';
@@ -22,6 +22,9 @@ import {UserComponent} from './user/user.component';
 import {AuthenticatedGuard} from './auth/guard/authenticated-guard';
 import {WelcomeModule} from './welcome/welcome.module';
 import {WelcomeComponent} from './welcome/welcome.component';
+import {Bag} from './core/bag';
+import {Player} from './core/player/player';
+import {PlayerComponent} from './player/player.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +32,7 @@ import {WelcomeComponent} from './welcome/welcome.component';
       WelcomeComponent,
       UserComponent,
       SearchComponent,
+      PlayerComponent,
   ],
   imports: [
       BrowserModule,
@@ -43,6 +47,8 @@ import {WelcomeComponent} from './welcome/welcome.component';
       MatListModule,
       MatProgressSpinnerModule,
       MatSidenavModule,
+      MatTabsModule,
+      MatSliderModule,
       WelcomeModule,
       UserModule,
       SearchModule,
@@ -69,6 +75,8 @@ import {WelcomeComponent} from './welcome/welcome.component';
       ]),
   ],
   providers: [
+      Bag,
+      Player,
       AuthenticatedGuard,
   ],
   bootstrap: [AppComponent],

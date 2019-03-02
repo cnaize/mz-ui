@@ -4,13 +4,20 @@
     width: 100%;
 }
 
+.bordered {
+    border: solid;
+    border-color: mat-color($reggae-primary);
+    border-width: 2px;
+    border-radius: 10px;
+}
+
 .media-title {
-    font-size: 1.2em !important;
+    font-size: 1.1em !important;
     color: mat-color($reggae-primary);
 }
 
 .media-owner {
-    font-size: 1.2em !important;
+    font-size: 1.1em !important;
     color: mat-color($reggae-accent);
 }
 
@@ -24,4 +31,20 @@
 
 .load-item {
     color: mat-color($reggae-primary);
+}
+
+::ng-deep .mat-form-field-wrapper {
+    padding-bottom: 0 !important;
+}
+
+::ng-deep .mat-form-field-underline {
+    visibility: hidden;
+}
+
+::ng-deep .mat-list-item-content {
+    padding: 0 !important;
+}
+
+::ng-deep .mat-list-text {
+    padding-left: 0 !important;
 }
