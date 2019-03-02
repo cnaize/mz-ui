@@ -10,7 +10,7 @@ import {User} from './user/model/user';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  public currentPage = 'SearchComponent';
+  public currentPage: string;
 
   constructor(public bag: Bag, public authGuard: AuthenticatedGuard, private userService: UserService) {
     // NOTE: REMOVE IT!!!

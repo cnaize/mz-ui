@@ -8,20 +8,21 @@
         <player></player>
       </mat-card-content>
     </mat-card>
-    <div id="content">
-      <mat-sidenav-container>
-        <mat-sidenav mode="side" opened disableClose>
-          <div class="full-width" fxLayout="column" fxLayoutAlign="start center">
-            <button [ngClass]="{'tab-button': true, 'full-width': true, 'tab-selected': currentPage === 'SearchComponent'}"
-                    mat-stroked-button color="accent" disableRipple>Search</button>
-            <button [ngClass]="{'tab-button': true, 'full-width': true}"
-                    mat-stroked-button color="accent" disableRipple>Settings</button>
-          </div>
-        </mat-sidenav>
-        <mat-sidenav-content>
-          <router-outlet (activate)="onActivate($event)"></router-outlet>
-        </mat-sidenav-content>
-      </mat-sidenav-container>
-    </div>
+    <mat-sidenav-container>
+      <mat-sidenav class="left-panel" mode="side" opened disableClose>
+        <div class="full-width" fxLayout="column" fxLayoutAlign="start center">
+          <button [ngClass]="{'tab-button': true, 'full-width': true,
+          'tab-selected': currentPage === 'SearchComponent',
+          'tab-deselected': currentPage !== 'SearchComponent'}"
+                  mat-stroked-button disableRipple>Search</button>
+          <button [ngClass]="{'tab-button': true, 'full-width': true,
+          'tab-deselected': true}"
+                  mat-stroked-button disableRipple>Settings</button>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content class="content">
+        <router-outlet (activate)="onActivate($event)"></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
   </div>
 </div>

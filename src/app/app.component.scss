@@ -5,13 +5,27 @@
 }
 
 .header {
-    background-color: black;
+    border-radius: 10px 10px 0 0;
+    background-color: $primary-bg-color;
 }
 
 .tab-button {
+    font-size: 1.2em;
     border-radius: 0;
 }
 
 .tab-selected {
     color: mat-color($reggae-primary) !important;
+}
+
+.tab-deselected {
+    color: mat-color($reggae-accent) !important;
+}
+
+.left-panel {
+    background-color: $primary-bg-color;
+}
+
+.content {
+    background-color: $primary-bg-color;
 }
