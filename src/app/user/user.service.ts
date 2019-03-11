@@ -8,11 +8,11 @@ export class UserService extends BaseService {
     public user: User;
 
     public signIn(user: User): AxiosPromise<User> {
-        return this.http.post(this.config.centerBaseUrl + '/v1/users/signin', JSON.stringify(user));
+        return this.http.post(this.env.centerBaseUrl + '/v1/users/signin', JSON.stringify(user));
     }
 
     public signUp(user: User): AxiosPromise<User> {
-        return this.http.post(this.config.centerBaseUrl + '/v1/users/signup', JSON.stringify(user));
+        return this.http.post(this.env.centerBaseUrl + '/v1/users/signup', JSON.stringify(user));
     }
 
     public setUser(user: User): void {

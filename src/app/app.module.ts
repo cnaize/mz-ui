@@ -55,12 +55,8 @@ import {PlayerComponent} from './parts/player/player.component';
       RouterModule.forRoot([
           {
               path: '',
-              redirectTo: '/welcome',
-              pathMatch: 'full',
-          },
-          {
-              path: 'welcome',
               component: WelcomeComponent,
+              pathMatch: 'full',
           },
           {
               path: 'user',

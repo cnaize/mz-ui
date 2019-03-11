@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  centerBaseUrl: 'http://localhost:11310',
 };
 
 /*

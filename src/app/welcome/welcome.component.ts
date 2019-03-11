@@ -15,7 +15,7 @@ export class WelcomeComponent {
     constructor(private router: Router, private userService: UserService) {
     }
 
-    private signin(): void {
+    public signin(): void {
         const self = this;
 
         self.userService.signIn(self.user)
@@ -33,7 +33,7 @@ export class WelcomeComponent {
             });
     }
 
-    private signup(): void {
+    public signup(): void {
         const self = this;
 
         self.userService.signUp(self.user)

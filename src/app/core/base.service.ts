@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
-import {Config} from './config';
-import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
+import axios, {AxiosInstance} from 'axios';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class BaseService {
     protected http: AxiosInstance;
+    protected env = environment;
 
-    constructor(protected config: Config) {
+    constructor() {
         const validStatusFn = (status: number) => {
             if ((status >= 200 && status < 300) ||
                 (status === 400) ||

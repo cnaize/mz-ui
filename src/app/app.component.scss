@@ -15,7 +15,7 @@
 }
 
 .tab-selected {
-    color: mat-color($reggae-primary) !important;
+    color: mat-color($selected-color) !important;
 }
 
 .tab-deselected {
@@ -26,6 +26,14 @@
     background-color: $primary-bg-color;
 }
 
+.bottom-panel {
+    background-color: $primary-bg-color;
+    width: 100%;
+    height: 16px;
+    border-radius: 0 0 10px 10px;
+}
+
 .content {
     background-color: $primary-bg-color;
+    padding-right: 16px;
 }

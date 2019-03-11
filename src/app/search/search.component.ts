@@ -49,7 +49,7 @@ export class SearchComponent {
         this.searchResponseList.items = [r1, r2];
     }
 
-    private addSearchRequest(text: string): void {
+    public addSearchRequest(text: string): void {
         if (text === '') {
             return;
         }

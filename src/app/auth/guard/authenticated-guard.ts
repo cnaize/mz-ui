@@ -22,7 +22,7 @@ export class AuthenticatedGuard {
             } else {
                 resolve(false);
 
-                self.router.navigate(['/welcome']);
+                self.router.navigate(['/']);
             }
         });
     }

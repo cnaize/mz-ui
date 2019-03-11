@@ -1,18 +1,11 @@
 @import '../../reggae';
 
 .content {
-    border-radius: 10px 0 0 0;
+    border-radius: 10px 10px 10px 10px;
 }
 
 .full-width {
     width: 100%;
-}
-
-.bordered {
-    border: solid;
-    border-color: mat-color($reggae-primary);
-    border-width: 2px;
-    border-radius: 10px;
 }
 
 .media-title {

@@ -1,5 +1,9 @@
 @import '../../reggae';
 
+.full-width {
+  width: 100%;
+}
+
 .selected {
   color: mat-color($reggae-primary);
   text-decoration: underline;

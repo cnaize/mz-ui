@@ -18,7 +18,10 @@
                      (click)="bag.player.requestMedia(item)">
         <div mat-line fxLayout="row" fxLayoutAlign="start center">
           <mat-icon matListIcon>{{deepEqual(item, bag.player.currentMedia) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
-          <span class="media-title" mat-line>{{item.media.name}}</span>
+          <div class="full-width" mat-line fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+            <div class="media-title">{{item.media.name}}</div>
+            <div class="media-owner">{{item.owner.username}}</div>
+          </div>
         </div>
         <span mat-line>/{{item.media.dir}}/{{item.media.name}}.{{item.media.ext}}</span>
         <mat-divider></mat-divider>
