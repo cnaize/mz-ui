@@ -8,6 +8,7 @@ import {Bag} from '../core/bag';
 import {User} from '../user/model/user';
 import {Media} from './model/media';
 import {SearchResponse} from './model/search-response';
+import {Page} from '../core/page';
 
 const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
 
@@ -16,7 +17,7 @@ const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
     templateUrl: './search.component.html',
     styleUrls: ['./search.component.scss'],
 })
-export class SearchComponent {
+export class SearchComponent extends Page {
     public searchRequest: SearchRequest;
     public searchResponseList: SearchResponseList;
     public loadingResponseList: boolean;
@@ -24,6 +25,8 @@ export class SearchComponent {
     private searchRequestIndex: number;
 
     constructor(public bag: Bag, private searchService: SearchService) {
+        super('search');
+
         this.searchResponseList = new SearchResponseList();
         this.searchResponseList.items = [];
 
