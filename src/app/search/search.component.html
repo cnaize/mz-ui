@@ -15,7 +15,7 @@
   <mat-card-content>
     <mat-list>
       <mat-list-item *ngFor="let item of searchResponseList.items"
-                     (click)="bag.player.requestMedia(item)">
+                     (click)="requestMedia(item)">
         <div mat-line fxLayout="row" fxLayoutAlign="start center">
           <mat-icon matListIcon>{{deepEqual(item, bag.player.currentMedia) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
           <div class="full-width" mat-line fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
@@ -26,12 +26,12 @@
         <span mat-line>/{{item.media.dir}}/{{item.media.name}}.{{item.media.ext}}</span>
         <mat-divider></mat-divider>
       </mat-list-item>
-      <mat-list-item *ngIf="loadingResponseList">
+      <mat-list-item *ngIf="loadingSearchResponse">
         <div mat-line fxLayout="row" fxLayoutAlign="center center">
           <h5 class="load-item">Loading...</h5>
         </div>
       </mat-list-item>
-      <mat-list-item *ngIf="searchRequest && !loadingResponseList">
+      <mat-list-item *ngIf="searchRequest && !loadingSearchResponse">
         <div mat-line fxLayout="row" fxLayoutAlign="center center">
           <button class="load-item" mat-stroked-button color="primary" (click)="loadMoreSearchResponseList()">Load More</button>
         </div>

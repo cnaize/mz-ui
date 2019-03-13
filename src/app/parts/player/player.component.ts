@@ -12,8 +12,8 @@ import {Bag} from '../../core/bag';
                 </div>
             </div>
             <div class="full-width" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
-                <div class="media-title">{{bag.player.currentMedia?.media.name}}</div>
-                <div class="media-owner">{{bag.player.currentMedia?.owner.username}}</div>
+                <div class="media-title">{{bag.player.mediaResponse?.media.name}}</div>
+                <div class="media-owner">{{bag.player.mediaResponse?.owner.username}}</div>
             </div>
             <mat-slider class="volume-control" #volumeBar value="50" color="primary"></mat-slider>
         </div>

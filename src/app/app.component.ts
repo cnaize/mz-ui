@@ -22,6 +22,5 @@ export class AppComponent {
 
   public onActivate(page: any): void {
     this.currentPage = page.name;
-    console.log('CURRENT PAGE: ' + this.currentPage);
   }
 }

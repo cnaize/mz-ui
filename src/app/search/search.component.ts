@@ -5,10 +5,10 @@ import {SearchResponseList} from './model/search-response-list';
 import deepEqual = require('deep-equal'); // tslint:disable-line
 import {Base64} from '../core/base64';
 import {Bag} from '../core/bag';
-import {User} from '../user/model/user';
-import {Media} from './model/media';
 import {SearchResponse} from './model/search-response';
 import {Page} from '../core/page';
+import {MediaRequest} from './model/media-request';
+import {MediaResponseList} from './model/media-response-list';
 
 const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
 
@@ -18,10 +18,12 @@ const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
     styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent extends Page {
-    public searchRequest: SearchRequest;
     public searchResponseList: SearchResponseList;
-    public loadingResponseList: boolean;
+    public mediaRequest: MediaRequest;
+    public loadingSearchResponse: boolean;
+    public loadingMediaResponse: boolean;
 
+    private searchRequest: SearchRequest;
     private searchRequestIndex: number;
 
     constructor(public bag: Bag, private searchService: SearchService) {
@@ -30,26 +32,26 @@ export class SearchComponent extends Page {
         this.searchResponseList = new SearchResponseList();
         this.searchResponseList.items = [];
 
-        // NOTE: REMOVE IT!!!
-        const u1 = new User();
-        u1.username = 'cnaize';
-        const u2 = new User();
-        u2.username = 'slash';
-        const m1 = new Media();
-        m1.name = 'Chaze - Think';
-        m1.dir = 'Chaze/Discography/Think 2019';
-        m1.ext = 'mp3';
-        const m2 = new Media();
-        m2.name = 'Feel Free - Mind';
-        m2.dir = 'Feel Free/Mind (2019)';
-        m2.ext = 'mp3';
-        const r1 = new SearchResponse();
-        r1.owner = u1;
-        r1.media = m1;
-        const r2 = new SearchResponse();
-        r2.owner = u2;
-        r2.media = m2;
-        this.searchResponseList.items = [r1, r2];
+        // // NOTE: REMOVE IT!!!
+        // const u1 = new User();
+        // u1.username = 'cnaize';
+        // const u2 = new User();
+        // u2.username = 'slash';
+        // const m1 = new Media();
+        // m1.name = 'Chaze - Think';
+        // m1.dir = 'Chaze/Discography/Think 2019';
+        // m1.ext = 'mp3';
+        // const m2 = new Media();
+        // m2.name = 'Feel Free - Mind';
+        // m2.dir = 'Feel Free/Mind (2019)';
+        // m2.ext = 'mp3';
+        // const r1 = new SearchResponse();
+        // r1.owner = u1;
+        // r1.media = m1;
+        // const r2 = new SearchResponse();
+        // r2.owner = u2;
+        // r2.media = m2;
+        // this.searchResponseList.items = [r1, r2];
     }
 
     public addSearchRequest(text: string): void {
@@ -71,26 +73,65 @@ export class SearchComponent extends Page {
             .catch((e) => console.log('Request AddSearchRequest failed: ' + e.toString()));
     }
 
-    private loadMoreSearchResponseList(): void {
-        const self = this;
-        const request = self.searchRequest;
+    public requestMedia(media: SearchResponse): void {
+        const request = new MediaRequest();
+        request.owner = media.owner.username;
+        request.mediaID = media.id;
+        // TODO: Fix this!!!
+        // request.webRTCKey = ???
 
-        if (!request || request.text === '') {
-            this.loadingResponseList = false;
+        const self = this;
+
+        self.searchService.addMediaRequest(request)
+            .then((r) => {
+                self.mediaRequest = request;
+
+                self.getMedia();
+            })
+            .catch((e) => console.log('Request AddMediaRequest failed: ' + e.toString()));
+    }
+
+    private getMedia(): void {
+        const self = this;
+
+        if (!self.mediaRequest) {
+            self.loadingMediaResponse = false;
             return;
         }
 
-        this.loadingResponseList = true;
+        self.loadingMediaResponse = true;
 
-        self.searchService.addSearchRequest(request.text)
+        self.searchService.getMediaResponseList()
             .then((r) => {
-                self.searchRequestIndex = 0;
+                const res: MediaResponseList = r.data;
+                if (r.status === 404) {
+                    self.loadingMediaResponse = false;
+                    return;
+                }
 
-                self.getSearchResponseList();
+                let done = false;
+                if (res.items) {
+                    for (const mr of res.items) {
+                        if (mr.user.username === self.mediaRequest.user
+                            && mr.owner.username === self.mediaRequest.owner
+                            && mr.media.id === self.mediaRequest.mediaID) {
+                            self.bag.player.play(mr);
+                            self.mediaRequest = null;
+                            done = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!done) {
+                    setTimeout(() => {
+                        self.getMedia();
+                    }, 1000);
+                }
             })
             .catch((e) => {
-                console.log('Request LoadMoreSearchResponseList failed: ' + e.toString());
-                self.loadingResponseList = false;
+                console.log('Request GetMediaResponsList failed: ' + e.toString());
+                self.loadingMediaResponse = false;
             });
     }
 
@@ -99,11 +140,11 @@ export class SearchComponent extends Page {
         const request = self.searchRequest;
 
         if (!request || request.text === '') {
-            this.loadingResponseList = false;
+            this.loadingSearchResponse = false;
             return;
         }
 
-        this.loadingResponseList = true;
+        this.loadingSearchResponse = true;
 
         self.searchService.getSearchResponseList(request,
             self.searchRequestIndex * MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT,
@@ -111,7 +152,7 @@ export class SearchComponent extends Page {
             .then((r) => {
                 const res: SearchResponseList = r.data;
                 if (r.status === 404) {
-                    self.loadingResponseList = false;
+                    self.loadingSearchResponse = false;
                     return;
                 }
 
@@ -137,12 +178,35 @@ export class SearchComponent extends Page {
                         self.getSearchResponseList();
                     }, 1000);
                 } else {
-                    self.loadingResponseList = false;
+                    self.loadingSearchResponse = false;
                 }
             })
             .catch((e) => {
                 console.log('Request GetSearchResponseList failed: ' + e.toString());
-                self.loadingResponseList = false;
+                self.loadingSearchResponse = false;
+            });
+    }
+
+    private loadMoreSearchResponseList(): void {
+        const self = this;
+        const request = self.searchRequest;
+
+        if (!request || request.text === '') {
+            this.loadingSearchResponse = false;
+            return;
+        }
+
+        this.loadingSearchResponse = true;
+
+        self.searchService.addSearchRequest(request.text)
+            .then((r) => {
+                self.searchRequestIndex = 0;
+
+                self.getSearchResponseList();
+            })
+            .catch((e) => {
+                console.log('Request LoadMoreSearchResponseList failed: ' + e.toString());
+                self.loadingSearchResponse = false;
             });
     }
 
