@@ -15,9 +15,23 @@ export class UserService extends BaseService {
         return this.http.post(this.env.centerBaseUrl + '/v1/users/signup', JSON.stringify(user));
     }
 
+    public sendUserToCore(user: User): void {
+        this.http.post(this.env.coreBaseUrl + '/v1/users/set', JSON.stringify(user))
+            .then((r) => {
+                if (r.status === 202) {
+                    console.log('User "' + user.username + '" sent to core successfully');
+                    return;
+                }
+
+                console.log('User "' + user.username + '" sent to core failed');
+            })
+            .catch((e) => console.log('User "' + user.username + '" sent to core failed: ' + e.toString()));
+    }
+
     public setUser(user: User): void {
         console.log('Setting current user: ' + user.username);
         this.addToken(user.token);
         this.user = user;
+        this.sendUserToCore(user);
     }
 }

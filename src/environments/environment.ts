@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  coreBaseUrl: 'http://localhost:11311',
   centerBaseUrl: 'http://localhost:11310',
 };
 
