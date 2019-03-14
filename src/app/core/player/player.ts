@@ -11,17 +11,6 @@ export class Player {
     public playing: boolean;
 
     constructor() {
-        // // NOTE: REMOVE IT!!!
-        // const u = new User();
-        // u.username = 'cnaize';
-        // const m = new Media();
-        // m.name = 'Chaze - Think';
-        // m.dir = '/home/music/Chaze/Discography/Think 2019';
-        // m.ext = 'mp3';
-        // const r = new SearchResponse();
-        // r.owner = u;
-        // r.media = m;
-        // this.currentMedia = r;
     }
 
     public play(mediaResponse: MediaResponse): void {
@@ -31,5 +20,13 @@ export class Player {
 
     public pause(): void {
         this.playing = false;
+    }
+
+    public isCurrentMediaEquals(searchResponse: SearchResponse): boolean {
+        return this.mediaResponse
+            && searchResponse
+            && this.mediaResponse.owner.username === searchResponse.owner.username
+            && this.mediaResponse.media.id === searchResponse.media.id
+            && this.mediaResponse.media.rootID === searchResponse.media.rootID;
     }
 }

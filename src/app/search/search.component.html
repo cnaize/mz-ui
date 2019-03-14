@@ -15,9 +15,9 @@
   <mat-card-content>
     <mat-list>
       <mat-list-item *ngFor="let item of searchResponseList.items"
-                     (click)="requestMedia(item)">
+                     (click)="addMediaRequest(item)">
         <div mat-line fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon matListIcon>{{deepEqual(item, bag.player.currentMedia) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
+          <mat-icon matListIcon>{{bag.player.isCurrentMediaEquals(item) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
           <div class="full-width" mat-line fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
             <div class="media-title">{{item.media.name}}</div>
             <div class="media-owner">{{item.owner.username}}</div>

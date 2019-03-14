@@ -9,8 +9,11 @@ import {SearchResponse} from './model/search-response';
 import {Page} from '../core/page';
 import {MediaRequest} from './model/media-request';
 import {MediaResponseList} from './model/media-response-list';
+import {User} from '../user/model/user';
+import {UserService} from '../user/user.service';
 
 const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
+const MEDIA_RESPONSES_TIMEOUT: number = 10;
 
 @Component({
     selector: 'search-component',
@@ -25,33 +28,13 @@ export class SearchComponent extends Page {
 
     private searchRequest: SearchRequest;
     private searchRequestIndex: number;
+    private mediaResponsesTime: number;
 
-    constructor(public bag: Bag, private searchService: SearchService) {
+    constructor(public bag: Bag, private searchService: SearchService, private userService: UserService) {
         super('search');
 
         this.searchResponseList = new SearchResponseList();
         this.searchResponseList.items = [];
-
-        // // NOTE: REMOVE IT!!!
-        // const u1 = new User();
-        // u1.username = 'cnaize';
-        // const u2 = new User();
-        // u2.username = 'slash';
-        // const m1 = new Media();
-        // m1.name = 'Chaze - Think';
-        // m1.dir = 'Chaze/Discography/Think 2019';
-        // m1.ext = 'mp3';
-        // const m2 = new Media();
-        // m2.name = 'Feel Free - Mind';
-        // m2.dir = 'Feel Free/Mind (2019)';
-        // m2.ext = 'mp3';
-        // const r1 = new SearchResponse();
-        // r1.owner = u1;
-        // r1.media = m1;
-        // const r2 = new SearchResponse();
-        // r2.owner = u2;
-        // r2.media = m2;
-        // this.searchResponseList.items = [r1, r2];
     }
 
     public addSearchRequest(text: string): void {
@@ -64,6 +47,10 @@ export class SearchComponent extends Page {
 
         self.searchService.addSearchRequest(text)
             .then((r) => {
+                if (r.status !== 201) {
+                    return;
+                }
+
                 self.searchRequest = new SearchRequest(text);
                 self.searchRequestIndex = 0;
                 self.searchResponseList.items = [];
@@ -73,29 +60,39 @@ export class SearchComponent extends Page {
             .catch((e) => console.log('Request AddSearchRequest failed: ' + e.toString()));
     }
 
-    public requestMedia(media: SearchResponse): void {
+    public addMediaRequest(response: SearchResponse): void {
+        const owner = new User();
+        owner.username = this.userService.user.username;
+
         const request = new MediaRequest();
-        request.owner = media.owner.username;
-        request.mediaID = media.id;
-        // TODO: Fix this!!!
-        // request.webRTCKey = ???
+        request.owner = owner;
+        request.mediaID = response.media.id;
+        request.rootID = response.media.rootID;
+        request.webRTCKey = 'FIX ME'; // TODO: Fix this!!!
 
         const self = this;
 
         self.searchService.addMediaRequest(request)
             .then((r) => {
-                self.mediaRequest = request;
+                if (r.status !== 201) {
+                    return;
+                }
 
-                self.getMedia();
+                self.mediaRequest = request;
+                self.mediaResponsesTime = 0;
+
+                self.getMediaResponses();
             })
             .catch((e) => console.log('Request AddMediaRequest failed: ' + e.toString()));
     }
 
-    private getMedia(): void {
+    private getMediaResponses(): void {
         const self = this;
 
-        if (!self.mediaRequest) {
+        if (!self.mediaRequest || self.mediaResponsesTime > MEDIA_RESPONSES_TIMEOUT) {
             self.loadingMediaResponse = false;
+            self.mediaResponsesTime = 0;
+            self.mediaRequest = null;
             return;
         }
 
@@ -103,20 +100,20 @@ export class SearchComponent extends Page {
 
         self.searchService.getMediaResponseList()
             .then((r) => {
-                const res: MediaResponseList = r.data;
-                if (r.status === 404) {
-                    self.loadingMediaResponse = false;
-                    return;
-                }
-
                 let done = false;
-                if (res.items) {
+
+                const res: MediaResponseList = r.data;
+                if (r.status === 200 && res.items) {
                     for (const mr of res.items) {
-                        if (mr.user.username === self.mediaRequest.user
-                            && mr.owner.username === self.mediaRequest.owner
-                            && mr.media.id === self.mediaRequest.mediaID) {
+                        if (!mr.error
+                            && mr.user.username === self.mediaRequest.user.username
+                            && mr.owner.username === self.mediaRequest.owner.username
+                            && mr.media.id === self.mediaRequest.mediaID
+                            && mr.media.rootID === self.mediaRequest.rootID) {
                             self.bag.player.play(mr);
                             self.mediaRequest = null;
+                            self.loadingMediaResponse = false;
+                            self.mediaResponsesTime = 0;
                             done = true;
                             break;
                         }
@@ -125,13 +122,16 @@ export class SearchComponent extends Page {
 
                 if (!done) {
                     setTimeout(() => {
-                        self.getMedia();
+                        self.mediaResponsesTime++;
+                        self.getMediaResponses();
                     }, 1000);
                 }
             })
             .catch((e) => {
-                console.log('Request GetMediaResponsList failed: ' + e.toString());
+                console.log('Request GetMediaResponseList failed: ' + e.toString());
                 self.loadingMediaResponse = false;
+                self.mediaResponsesTime = 0;
+                self.mediaRequest = null;
             });
     }
 
@@ -140,11 +140,11 @@ export class SearchComponent extends Page {
         const request = self.searchRequest;
 
         if (!request || request.text === '') {
-            this.loadingSearchResponse = false;
+            self.loadingSearchResponse = false;
             return;
         }
 
-        this.loadingSearchResponse = true;
+        self.loadingSearchResponse = true;
 
         self.searchService.getSearchResponseList(request,
             self.searchRequestIndex * MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT,
@@ -192,11 +192,11 @@ export class SearchComponent extends Page {
         const request = self.searchRequest;
 
         if (!request || request.text === '') {
-            this.loadingSearchResponse = false;
+            self.loadingSearchResponse = false;
             return;
         }
 
-        this.loadingSearchResponse = true;
+        self.loadingSearchResponse = true;
 
         self.searchService.addSearchRequest(request.text)
             .then((r) => {
