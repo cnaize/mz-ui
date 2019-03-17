@@ -47,10 +47,6 @@ export class SearchComponent extends Page {
 
         self.searchService.addSearchRequest(text)
             .then((r) => {
-                if (r.status !== 201) {
-                    return;
-                }
-
                 self.searchRequest = new SearchRequest(text);
                 self.searchRequestIndex = 0;
                 self.searchResponseList.items = [];
@@ -66,7 +62,7 @@ export class SearchComponent extends Page {
 
         const request = new MediaRequest();
         request.owner = owner;
-        request.mediaID = response.media.id;
+        request.mediaID = response.media.coreSideID;
         request.rootID = response.media.rootID;
         request.webRTCKey = 'FIX ME'; // TODO: Fix this!!!
 
@@ -108,7 +104,7 @@ export class SearchComponent extends Page {
                         if (!mr.error
                             && mr.user.username === self.mediaRequest.user.username
                             && mr.owner.username === self.mediaRequest.owner.username
-                            && mr.media.id === self.mediaRequest.mediaID
+                            && mr.media.coreSideID === self.mediaRequest.mediaID
                             && mr.media.rootID === self.mediaRequest.rootID) {
                             self.bag.player.play(mr);
                             self.mediaRequest = null;

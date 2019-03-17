@@ -23,7 +23,7 @@
             <div class="media-owner">{{item.owner.username}}</div>
           </div>
         </div>
-        <span mat-line>/{{item.media.dir}}/{{item.media.name}}.{{item.media.ext}}</span>
+        <span mat-line>{{item.media.dir ? "/" + item.media.dir : ""}}/{{item.media.name}}.{{item.media.ext}}</span>
         <mat-divider></mat-divider>
       </mat-list-item>
       <mat-list-item *ngIf="loadingSearchResponse">
