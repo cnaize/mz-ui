@@ -4,13 +4,14 @@ import {SearchRequest} from './model/search-request';
 import {SearchResponseList} from './model/search-response-list';
 import deepEqual = require('deep-equal'); // tslint:disable-line
 import {Base64} from '../core/base64';
-import {Bag} from '../core/bag';
 import {SearchResponse} from './model/search-response';
 import {Page} from '../core/page';
 import {MediaRequest} from './model/media-request';
 import {MediaResponseList} from './model/media-response-list';
 import {User} from '../user/model/user';
 import {UserService} from '../user/user.service';
+import {PeerConnection} from '../core/model/peer-connection';
+import {Player} from '../core/player/player';
 
 const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
 const MEDIA_RESPONSES_TIMEOUT: number = 10;
@@ -21,16 +22,14 @@ const MEDIA_RESPONSES_TIMEOUT: number = 10;
     styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent extends Page {
+    public searchRequest: SearchRequest;
     public searchResponseList: SearchResponseList;
     public mediaRequest: MediaRequest;
     public loadingSearchResponse: boolean;
-    public loadingMediaResponse: boolean;
 
-    private searchRequest: SearchRequest;
     private searchRequestIndex: number;
-    private mediaResponsesTime: number;
 
-    constructor(public bag: Bag, private searchService: SearchService, private userService: UserService) {
+    constructor(private player: Player, private searchService: SearchService, private userService: UserService) {
         super('search');
 
         this.searchResponseList = new SearchResponseList();
@@ -57,46 +56,74 @@ export class SearchComponent extends Page {
     }
 
     public addMediaRequest(response: SearchResponse): void {
-        const owner = new User();
-        owner.username = this.userService.user.username;
+        const peer = this.createPeerConnection();
 
-        const request = new MediaRequest();
-        request.owner = owner;
-        request.mediaID = response.media.coreSideID;
-        request.rootID = response.media.rootID;
-        request.webRTCKey = 'FIX ME'; // TODO: Fix this!!!
+        let tryN = 0;
+        const sendMediaRequest = (() => {
+            if (tryN > 5) {
+                console.log('AddMediaRequest: peer local description timeout');
+                peer.connection.close();
+                return;
+            }
 
-        const self = this;
+            if (peer.error) {
+                console.log('AddMediaRequest: peer connection error: ' + peer.error);
+                peer.connection.close();
+                return;
+            }
 
-        self.searchService.addMediaRequest(request)
-            .then((r) => {
-                if (r.status !== 201) {
-                    return;
-                }
+            if (peer.webRTCKey) {
+                const owner = new User();
+                owner.username = this.userService.user.username;
 
-                self.mediaRequest = request;
-                self.mediaResponsesTime = 0;
+                const request = new MediaRequest();
+                request.owner = owner;
+                request.media = response.media;
+                request.webRTCKey = peer.webRTCKey;
 
-                self.getMediaResponses();
-            })
-            .catch((e) => console.log('Request AddMediaRequest failed: ' + e.toString()));
+                const self = this;
+
+                self.player.setMediaRequest(peer, request);
+
+                self.searchService.addMediaRequest(request)
+                    .then((r) => {
+                        if (r.status !== 201) {
+                            return;
+                        }
+
+                        self.mediaRequest = request;
+
+                        self.getMediaResponses();
+                    })
+                    .catch((e) => console.log('Request AddMediaRequest failed: ' + e.toString()));
+            } else {
+                tryN++;
+                setTimeout(() => {
+                    sendMediaRequest();
+                }, 200);
+            }
+        });
+
+        sendMediaRequest();
     }
 
     private getMediaResponses(): void {
         const self = this;
 
-        if (!self.mediaRequest || self.mediaResponsesTime > MEDIA_RESPONSES_TIMEOUT) {
-            self.loadingMediaResponse = false;
-            self.mediaResponsesTime = 0;
+        if (!self.mediaRequest) {
             self.mediaRequest = null;
             return;
         }
 
-        self.loadingMediaResponse = true;
-
         self.searchService.getMediaResponseList()
             .then((r) => {
                 let done = false;
+
+                if (r.status === 404) {
+                    this.mediaRequest = null;
+                    this.player.dropRequest();
+                    return;
+                }
 
                 const res: MediaResponseList = r.data;
                 if (r.status === 200 && res.items) {
@@ -104,12 +131,13 @@ export class SearchComponent extends Page {
                         if (!mr.error
                             && mr.user.username === self.mediaRequest.user.username
                             && mr.owner.username === self.mediaRequest.owner.username
-                            && mr.media.coreSideID === self.mediaRequest.mediaID
-                            && mr.media.rootID === self.mediaRequest.rootID) {
-                            self.bag.player.play(mr);
+                            && mr.media.coreSideID === self.mediaRequest.media.coreSideID
+                            && mr.media.rootID === self.mediaRequest.media.rootID) {
+                            if (self.player.setMediaResponse(mr)) {
+                                self.player.play();
+                            }
+
                             self.mediaRequest = null;
-                            self.loadingMediaResponse = false;
-                            self.mediaResponsesTime = 0;
                             done = true;
                             break;
                         }
@@ -118,15 +146,12 @@ export class SearchComponent extends Page {
 
                 if (!done) {
                     setTimeout(() => {
-                        self.mediaResponsesTime++;
                         self.getMediaResponses();
                     }, 1000);
                 }
             })
             .catch((e) => {
                 console.log('Request GetMediaResponseList failed: ' + e.toString());
-                self.loadingMediaResponse = false;
-                self.mediaResponsesTime = 0;
                 self.mediaRequest = null;
             });
     }
@@ -204,6 +229,38 @@ export class SearchComponent extends Page {
                 console.log('Request LoadMoreSearchResponseList failed: ' + e.toString());
                 self.loadingSearchResponse = false;
             });
+    }
+
+    private createPeerConnection(): PeerConnection {
+        const pc = new RTCPeerConnection({
+            iceServers: [
+                {urls: 'stun:stun.l.google.com:19302'},
+                {urls: 'stun:stun1.l.google.com:19302'},
+                {urls: 'stun:stun2.l.google.com:19302'},
+                {urls: 'stun:stun3.l.google.com:19302'},
+                {urls: 'stun:stun4.l.google.com:19302'},
+            ],
+        });
+
+        const peer = new PeerConnection();
+        peer.connection = pc;
+
+        pc.onicecandidate = ((event) => {
+            if (event.candidate === null) {
+                peer.webRTCKey = Base64.Encode(JSON.stringify(pc.localDescription));
+            }
+        });
+
+        pc.createOffer({offerToReceiveAudio: true})
+            .then((d) => {
+                pc.setLocalDescription(d);
+            })
+            .catch((e) => {
+                peer.error = 'Peer connection: offer creation failed: ' + e.toString();
+                console.log(peer.error);
+            });
+
+        return peer;
     }
 
     private deepEqual(actual: any, expected: any): boolean {

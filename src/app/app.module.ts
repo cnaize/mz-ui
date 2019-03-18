@@ -22,7 +22,6 @@ import {UserComponent} from './user/user.component';
 import {AuthenticatedGuard} from './auth/guard/authenticated-guard';
 import {WelcomeModule} from './welcome/welcome.module';
 import {WelcomeComponent} from './welcome/welcome.component';
-import {Bag} from './core/bag';
 import {Player} from './core/player/player';
 import {PlayerComponent} from './parts/player/player.component';
 
@@ -71,7 +70,6 @@ import {PlayerComponent} from './parts/player/player.component';
       ]),
   ],
   providers: [
-      Bag,
       Player,
       AuthenticatedGuard,
   ],

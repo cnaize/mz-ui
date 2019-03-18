@@ -13,3 +13,55 @@
   color: mat-color($reggae-accent);
   text-decoration: underline;
 }
+
+.top-field {
+  margin-top: 1em;
+}
+
+.bottom-field {
+  margin-bottom: 1em;
+}
+
+.title {
+  font-size: 3em;
+  color: $accent-bg-color;
+}
+
+.header {
+  width: 100%;
+  border-radius: 10px;
+  background-color: mat-color($reggae-primary);
+  text-align: center;
+}
+
+.desc {
+  width: 100%;
+  border-radius: 10px;
+  background-color: $accent-bg-color;
+  color: mat-color($reggae-accent);
+  text-align: center;
+}
+
+.desc-h {
+  color: mat-color($reggae-primary);
+}
+
+.desc-l {
+  color: $accent-bg-color;
+}
+
+.mat-tab-group {
+  width: 100%;
+}
+
+::ng-deep .mat-tab-label {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+::ng-deep .mat-tab-header {
+  border-bottom: 0;
+}
+
+::ng-deep .mat-card-header-text {
+  margin: 0 !important;
+}

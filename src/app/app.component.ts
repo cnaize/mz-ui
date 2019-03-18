@@ -1,8 +1,6 @@
 import {Component} from '@angular/core';
 import {AuthenticatedGuard} from './auth/guard/authenticated-guard';
-import {Bag} from './core/bag';
 import {UserService} from './user/user.service';
-import {User} from './user/model/user';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +10,7 @@ import {User} from './user/model/user';
 export class AppComponent {
   public currentPage = 'SearchComponent';
 
-  constructor(public bag: Bag, public authGuard: AuthenticatedGuard, private userService: UserService) {
-    // // NOTE: REMOVE IT!!!
-    // const u = new User();
-    // u.username = 'ni';
-    // u.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6Im5pIn0.E04Xxz7ROycss7bo8mGQ8BHZd4_lGIbAc4H9wlXTAIY';
-    // this.userService.setUser(u);
+  constructor(public authGuard: AuthenticatedGuard, private userService: UserService) {
   }
 
   public onActivate(page: any): void {

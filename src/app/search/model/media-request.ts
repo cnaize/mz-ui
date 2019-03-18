@@ -1,9 +1,9 @@
 import {User} from '../../user/model/user';
+import {Media} from './media';
 
 export class MediaRequest {
     public user: User;
     public owner: User;
-    public mediaID: number;
-    public rootID: number;
+    public media: Media;
     public webRTCKey: string;
 }

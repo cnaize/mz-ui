@@ -1,5 +1,5 @@
-import {Component, ViewChild} from '@angular/core';
-import {Bag} from '../../core/bag';
+import {Component} from '@angular/core';
+import {Player} from '../../core/player/player';
 
 @Component({
     selector: 'player',
@@ -8,12 +8,13 @@ import {Bag} from '../../core/bag';
         <div class="player" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.5em">
             <div>
                 <div class="play-control" fxLayout="row" fxLayoutAlign="center center">
-                    <mat-icon [inline]="true">{{bag.player.playing ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
+                    <mat-icon [inline]="true">{{player.isWaitingForResponse() ? "hourglass_empty" :
+                            (player.isPlaying() ? "pause_circle_outline" : "play_circle_outline")}}</mat-icon>
                 </div>
             </div>
             <div class="full-width" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
-                <div class="media-title">{{bag.player.mediaResponse?.media.name}}</div>
-                <div class="media-owner">{{bag.player.mediaResponse?.owner.username}}</div>
+                <div class="media-title">{{player.mediaRequest ? player.mediaRequest.media.name : "Nothing to play"}}</div>
+                <div class="media-owner">{{player.mediaRequest ? player.mediaRequest.owner.username : ""}}</div>
             </div>
             <mat-slider class="volume-control" #volumeBar value="50" color="primary"></mat-slider>
         </div>
@@ -22,6 +23,6 @@ import {Bag} from '../../core/bag';
 
 export class PlayerComponent {
 
-    constructor(public bag: Bag) {
+    constructor(public player: Player) {
     }
 }

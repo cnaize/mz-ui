@@ -1,44 +1,50 @@
-<div fxLayout="row" fxLayoutAlign="center center">
-  <div fxFlex.xs="80" fxFlex.sm="60" fxFlex.md="40" fxFlex="30">
-    <mat-card>
-      <mat-card-content>
-        <mat-tab-group mat-align-tabs="center">
-          <mat-tab label="Sign In">
-            <form class="sign-form">
-              <div fxLayout="column" fxLayoutAlign="start center">
-                <mat-form-field>
-                  <mat-label>Username</mat-label>
-                  <input matInput name="username" [(ngModel)]="user.username" required>
-                </mat-form-field>
-                <mat-form-field>
-                  <mat-label>Password</mat-label>
-                  <input matInput type="password" name="password" [(ngModel)]="user.password" required>
-                </mat-form-field>
-                <button mat-stroked-button color="primary" disableRipple (click)="signin()">Sign In</button>
-              </div>
-            </form>
-          </mat-tab>
-          <mat-tab label="Sign Up">
-            <form class="sign-form">
-              <div fxLayout="column" fxLayoutAlign="start center">
-                <mat-form-field>
-                  <mat-label>Username</mat-label>
-                  <input matInput name="username" [(ngModel)]="user.username" required>
-                </mat-form-field>
-                <mat-form-field>
-                  <mat-label>Password</mat-label>
-                  <input matInput type="password" name="password" [(ngModel)]="user.password" required>
-                </mat-form-field>
-                <mat-form-field>
-                  <mat-label>Repeat Password</mat-label>
-                  <input matInput type="password" name="password1" [(ngModel)]="user.password1" required>
-                </mat-form-field>
-                <button mat-stroked-button color="primary" disableRipple (click)="signup()">Sign Up</button>
-              </div>
-            </form>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
-  </div>
+<div class="header" fxLayout="row" fxLayoutAlign="center center">
+  <h1 class="title"><span class="desc-l">♫</span>MuzeZone<span class="desc-l">♫</span></h1><br>
 </div>
+<mat-card>
+  <mat-card-header>
+    <h1 class="desc">
+      <span class="desc-h">Listen</span> your <span class="desc-h">music</span> and shared by others
+      <span class="desc-h">directly</span>
+    </h1>
+  </mat-card-header>
+  <mat-card-header>
+    <mat-tab-group mat-align-tabs="center">
+      <mat-tab label="Sign In">
+        <form class="sign-form">
+          <div class="sign-fields" fxLayout="column" fxLayoutAlign="start center">
+            <mat-form-field class="top-field">
+              <mat-label>Username</mat-label>
+              <input matInput name="username" [(ngModel)]="user.username" required>
+            </mat-form-field>
+            <mat-form-field class="bottom-field">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" name="password" [(ngModel)]="user.password" required>
+            </mat-form-field>
+            <button mat-stroked-button color="primary" disableRipple (click)="signin()">Sign In</button>
+          </div>
+        </form>
+      </mat-tab>
+      <mat-tab label="Sign Up">
+        <form class="sign-form">
+          <div class="sign-fields" fxLayout="column" fxLayoutAlign="start center">
+            <mat-form-field class="top-field">
+              <mat-label>Username</mat-label>
+              <input matInput name="username" [(ngModel)]="user.username" required>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Password</mat-label>
+              <input matInput type="password" name="password" [(ngModel)]="user.password" required>
+            </mat-form-field>
+            <mat-form-field class="bottom-field">
+              <mat-label>Repeat Password</mat-label>
+              <input matInput type="password" name="password1" [(ngModel)]="user.password1" required>
+            </mat-form-field>
+            <button mat-stroked-button color="primary" disableRipple (click)="signup()">Sign Up</button>
+          </div>
+        </form>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-header>
+</mat-card>
+
