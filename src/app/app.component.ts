@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {AuthenticatedGuard} from './auth/guard/authenticated-guard';
-import {UserService} from './user/user.service';
 
 @Component({
   selector: 'app-root',
@@ -8,9 +7,9 @@ import {UserService} from './user/user.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  public currentPage = 'SearchComponent';
+  public currentPage = 'search';
 
-  constructor(public authGuard: AuthenticatedGuard, private userService: UserService) {
+  constructor(public authGuard: AuthenticatedGuard) {
   }
 
   public onActivate(page: any): void {

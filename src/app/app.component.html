@@ -1,31 +1,29 @@
 <div fxLayout="row" fxLayoutAlign="center center">
-  <div fxFlex.xs="90" fxFlex.sm="70" fxFlex.md="50" fxFlex="40">
-    <div class="full-width" *ngIf="!authGuard.isAuthenticated()">
-      <welcome-component></welcome-component>
-    </div>
-    <div *ngIf="authGuard.isAuthenticated()" fxFlex.xs="90" fxFlex.sm="70" fxFlex.md="50" fxFlex="40">
-      <mat-card class="header">
-        <mat-card-content>
-          <player></player>
-        </mat-card-content>
-      </mat-card>
-      <mat-sidenav-container>
-        <mat-sidenav class="left-panel" mode="side" opened disableClose>
-          <div class="full-width" fxLayout="column" fxLayoutAlign="start center">
-            <button [ngClass]="{'tab-button': true, 'full-width': true,
-          'tab-selected': currentPage === 'search',
-          'tab-deselected': currentPage !== 'search'}"
-                    mat-stroked-button disableRipple>Search</button>
-            <button [ngClass]="{'tab-button': true, 'full-width': true,
-          'tab-deselected': true}"
-                    mat-stroked-button disableRipple>Settings</button>
-          </div>
-        </mat-sidenav>
-        <mat-sidenav-content class="content">
-          <router-outlet (activate)="onActivate($event)"></router-outlet>
-        </mat-sidenav-content>
-      </mat-sidenav-container>
-      <div class="bottom-panel"></div>
-    </div>
+  <div class="full-width" *ngIf="!authGuard.isAuthenticated()" fxFlex.xs="90" fxFlex.sm="70" fxFlex.md="50" fxFlex="40">
+    <welcome-component></welcome-component>
+  </div>
+  <div *ngIf="authGuard.isAuthenticated()" fxFlex.xs="90" fxFlex.sm="70" fxFlex.md="50" fxFlex="40">
+    <mat-card class="header">
+      <mat-card-content>
+        <player></player>
+      </mat-card-content>
+    </mat-card>
+    <mat-sidenav-container>
+      <mat-sidenav class="left-panel" mode="side" opened disableClose>
+        <div class="full-width" fxLayout="column" fxLayoutAlign="start center">
+          <button [ngClass]="{'tab-button': true, 'full-width': true,
+        'tab-selected': currentPage === 'search',
+        'tab-deselected': currentPage !== 'search'}"
+                  mat-stroked-button disableRipple>Search</button>
+          <button [ngClass]="{'tab-button': true, 'full-width': true,
+        'tab-deselected': true}"
+                  mat-stroked-button disableRipple>Settings</button>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content class="content">
+        <router-outlet (activate)="onActivate($event)"></router-outlet>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+    <div class="bottom-panel"></div>
   </div>
 </div>

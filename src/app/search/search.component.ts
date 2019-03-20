@@ -12,9 +12,9 @@ import {User} from '../user/model/user';
 import {UserService} from '../user/user.service';
 import {PeerConnection} from '../core/model/peer-connection';
 import {Player} from '../core/player/player';
+import {MatTabChangeEvent} from '@angular/material';
 
 const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
-const MEDIA_RESPONSES_TIMEOUT: number = 10;
 
 @Component({
     selector: 'search-component',
@@ -22,7 +22,7 @@ const MEDIA_RESPONSES_TIMEOUT: number = 10;
     styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent extends Page {
-    public searchRequest: SearchRequest;
+    public searchRequest: SearchRequest = new SearchRequest('public', '');
     public searchResponseList: SearchResponseList;
     public mediaRequest: MediaRequest;
     public loadingSearchResponse: boolean;
@@ -42,11 +42,14 @@ export class SearchComponent extends Page {
         }
 
         const self = this;
-        text = Base64.Encode(text.trim().toLowerCase());
+        self.searchRequest.text = text;
 
-        self.searchService.addSearchRequest(text)
+        self.searchService.addSearchRequest(self.searchRequest)
             .then((r) => {
-                self.searchRequest = new SearchRequest(text);
+                if (r.status !== 201 && r.status !== 409) {
+                    return;
+                }
+
                 self.searchRequestIndex = 0;
                 self.searchResponseList.items = [];
 
@@ -56,6 +59,7 @@ export class SearchComponent extends Page {
     }
 
     public addMediaRequest(response: SearchResponse): void {
+        const self = this;
         const peer = this.createPeerConnection();
 
         let tryN = 0;
@@ -79,9 +83,8 @@ export class SearchComponent extends Page {
                 const request = new MediaRequest();
                 request.owner = owner;
                 request.media = response.media;
+                request.mode = self.searchRequest.mode;
                 request.webRTCKey = peer.webRTCKey;
-
-                const self = this;
 
                 self.player.setMediaRequest(peer, request);
 
@@ -160,7 +163,7 @@ export class SearchComponent extends Page {
         const self = this;
         const request = self.searchRequest;
 
-        if (!request || request.text === '') {
+        if (request.text === '') {
             self.loadingSearchResponse = false;
             return;
         }
@@ -212,14 +215,14 @@ export class SearchComponent extends Page {
         const self = this;
         const request = self.searchRequest;
 
-        if (!request || request.text === '') {
+        if (request.text === '') {
             self.loadingSearchResponse = false;
             return;
         }
 
         self.loadingSearchResponse = true;
 
-        self.searchService.addSearchRequest(request.text)
+        self.searchService.addSearchRequest(request)
             .then((r) => {
                 self.searchRequestIndex = 0;
 
@@ -261,6 +264,23 @@ export class SearchComponent extends Page {
             });
 
         return peer;
+    }
+
+    private onModeChange(event: MatTabChangeEvent): void {
+        switch (event.tab.textLabel) {
+            case 'Public':
+                this.searchRequest.mode = 'public';
+                break;
+            case 'Mine':
+                this.searchRequest.mode = 'private';
+                break;
+        }
+
+        this.addSearchRequest(this.searchRequest.text);
+    }
+
+    private encodeSearchText(text: string): string {
+        return Base64.Encode(text.trim().toLowerCase());
     }
 
     private deepEqual(actual: any, expected: any): boolean {

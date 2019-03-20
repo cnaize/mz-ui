@@ -8,13 +8,14 @@ import {MediaResponseList} from './model/media-response-list';
 
 @Injectable()
 export class SearchService extends BaseService {
-    public addSearchRequest(text: string): AxiosPromise<SearchRequest> {
-        return this.http.post(this.env.centerBaseUrl + '/v1/searches/requests?text=' + text);
+    public addSearchRequest(request: SearchRequest): AxiosPromise<SearchRequest> {
+        return this.http.post(this.env.centerBaseUrl + '/v1/searches/requests?mode=' + request.mode +
+            '&text=' + request.text);
     }
 
     public getSearchResponseList(request: SearchRequest, offset: number, count: number): AxiosPromise<SearchResponseList> {
-        return this.http.get(this.env.centerBaseUrl + '/v1/searches/responses?text=' + request.text +
-            '&offset=' + offset + '&count=' + count);
+        return this.http.get(this.env.centerBaseUrl + '/v1/searches/responses?mode=' + request.mode +
+            '&text=' + request.text + '&offset=' + offset + '&count=' + count);
     }
 
     public addMediaRequest(media: MediaRequest): AxiosPromise {

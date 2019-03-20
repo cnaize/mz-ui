@@ -29,16 +29,20 @@
 
 .header {
   width: 100%;
-  border-radius: 10px;
+  border-radius: 10px 10px 0 0;
   background-color: mat-color($reggae-primary);
   text-align: center;
+}
+
+.content {
+  border-radius: 0 0 10px 10px;
 }
 
 .desc {
   width: 100%;
   border-radius: 10px;
   background-color: $accent-bg-color;
-  color: mat-color($reggae-accent);
+  color: $primary-bg-color;
   text-align: center;
 }
 

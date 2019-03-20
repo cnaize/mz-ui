@@ -1,41 +1,57 @@
+<ng-template #searchResponseListTmpl>
+  <mat-list>
+    <mat-list-item *ngFor="let item of searchResponseList.items"
+                   (click)="addMediaRequest(item)">
+      <div mat-line fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon matListIcon>{{player.isCurrentMediaEquals(item) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
+        <div class="full-width" mat-line fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
+          <div class="media-title">{{item.media.name}}</div>
+          <div class="media-owner">{{item.owner.username}}</div>
+        </div>
+      </div>
+      <span mat-line>{{item.media.dir ? "/" + item.media.dir : ""}}/{{item.media.name}}.{{item.media.ext}}</span>
+      <mat-divider></mat-divider>
+    </mat-list-item>
+    <mat-list-item *ngIf="loadingSearchResponse">
+      <div mat-line fxLayout="row" fxLayoutAlign="center center">
+        <h5 class="load-item">Loading...</h5>
+      </div>
+    </mat-list-item>
+    <mat-list-item *ngIf="searchRequest.text !== '' && !loadingSearchResponse">
+      <div mat-line fxLayout="row" fxLayoutAlign="center center">
+        <button class="load-item" mat-stroked-button color="primary"
+                (click)="loadMoreSearchResponseList()">
+          Load More
+        </button>
+      </div>
+    </mat-list-item>
+  </mat-list>
+</ng-template>
+
 <mat-card class="content">
   <mat-card-title>
     <form class="full-width">
       <div fxLayout="row" fxLayoutAlign="center center">
         <mat-form-field class="full-width">
           <mat-label>Music Search</mat-label>
-          <input matInput type="search" maxlength="64" placeholder="Author, Title, Extension, etc."
-                 #searchTextField name="searchTextField">
+          <input #searchTextField matInput type="search" maxlength="64" name="searchTextField"
+                 placeholder="@username, author, title, extension, etc.">
         </mat-form-field>
-        <button mat-icon-button (click)="addSearchRequest(searchTextField.value)"><mat-icon>search</mat-icon></button>
+        <button mat-icon-button (click)="addSearchRequest(encodeSearchText(searchTextField.value))">
+          <mat-icon>search</mat-icon>
+        </button>
       </div>
     </form>
   </mat-card-title>
   <mat-divider></mat-divider>
   <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let item of searchResponseList.items"
-                     (click)="addMediaRequest(item)">
-        <div mat-line fxLayout="row" fxLayoutAlign="start center">
-          <mat-icon matListIcon>{{player.isCurrentMediaEquals(item) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
-          <div class="full-width" mat-line fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
-            <div class="media-title">{{item.media.name}}</div>
-            <div class="media-owner">{{item.owner.username}}</div>
-          </div>
-        </div>
-        <span mat-line>{{item.media.dir ? "/" + item.media.dir : ""}}/{{item.media.name}}.{{item.media.ext}}</span>
-        <mat-divider></mat-divider>
-      </mat-list-item>
-      <mat-list-item *ngIf="loadingSearchResponse">
-        <div mat-line fxLayout="row" fxLayoutAlign="center center">
-          <h5 class="load-item">Loading...</h5>
-        </div>
-      </mat-list-item>
-      <mat-list-item *ngIf="searchRequest && !loadingSearchResponse">
-        <div mat-line fxLayout="row" fxLayoutAlign="center center">
-          <button class="load-item" mat-stroked-button color="primary" (click)="loadMoreSearchResponseList()">Load More</button>
-        </div>
-      </mat-list-item>
-    </mat-list>
+    <mat-tab-group (selectedTabChange)="onModeChange($event)" mat-align-tabs="center">
+      <mat-tab label="Public">
+        <ng-container *ngTemplateOutlet="searchResponseListTmpl"></ng-container>
+      </mat-tab>
+      <mat-tab label="Mine">
+        <ng-container *ngTemplateOutlet="searchResponseListTmpl"></ng-container>
+      </mat-tab>
+    </mat-tab-group>
   </mat-card-content>
 </mat-card>

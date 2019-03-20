@@ -6,6 +6,7 @@ export class MediaResponse {
     public user: User;
     public owner: User;
     public media: Media;
+    public mode: string;
     public webRTCKey: string;
     public error: Error;
 }

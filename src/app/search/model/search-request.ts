@@ -2,6 +2,6 @@
 export class SearchRequest {
     public id: number;
 
-    constructor(public text: string) {
+    constructor(public mode: string, public text: string) {
     }
 }
