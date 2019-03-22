@@ -1,9 +1,12 @@
 <ng-template #searchResponseListTmpl>
   <mat-list>
     <mat-list-item *ngFor="let item of searchResponseList.items"
+                   [ngClass]="{selected: player.isCurrentMediaEquals(item)}"
                    (click)="addMediaRequest(item)">
       <div mat-line fxLayout="row" fxLayoutAlign="start center">
-        <mat-icon matListIcon>{{player.isCurrentMediaEquals(item) ? "pause_circle_outline" : "play_circle_outline"}}</mat-icon>
+        <mat-icon matListIcon>{{player.isCurrentMediaEquals(item) ?
+          (player.isWaitingForResponse() ? "hourglass_empty" : (player.isPlaying() ?
+          "play_circle_outline" : "pause_circle_outline")) : "play_circle_outline"}}</mat-icon>
         <div class="full-width" mat-line fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="1em">
           <div class="media-title">{{item.media.name}}</div>
           <div class="media-owner">{{item.owner.username}}</div>
@@ -35,7 +38,7 @@
         <mat-form-field class="full-width">
           <mat-label>Music Search</mat-label>
           <input #searchTextField matInput type="search" maxlength="64" name="searchTextField"
-                 placeholder="@username, author, title, extension, etc.">
+                 placeholder="@user author title extension etc.">
         </mat-form-field>
         <button mat-icon-button (click)="addSearchRequest(encodeSearchText(searchTextField.value))">
           <mat-icon>search</mat-icon>
@@ -49,7 +52,7 @@
       <mat-tab label="Public">
         <ng-container *ngTemplateOutlet="searchResponseListTmpl"></ng-container>
       </mat-tab>
-      <mat-tab label="Mine">
+      <mat-tab label="Own">
         <ng-container *ngTemplateOutlet="searchResponseListTmpl"></ng-container>
       </mat-tab>
     </mat-tab-group>

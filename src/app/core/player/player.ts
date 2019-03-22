@@ -4,6 +4,7 @@ import {MediaResponse} from '../../search/model/media-response';
 import {MediaRequest} from '../../search/model/media-request';
 import {PeerConnection} from '../model/peer-connection';
 import {Base64} from '../base64';
+import deepEqual = require('deep-equal');
 
 @Injectable()
 export class Player {
@@ -34,7 +35,7 @@ export class Player {
     }
 
     public isWaitingForResponse(): boolean {
-        return !(!this.peer || !this.mediaRequest) && !this.mediaResponse;
+        return this.peer != null && this.mediaRequest != null && this.mediaResponse == null;
     }
 
     public isPlaying(): boolean {
@@ -45,7 +46,7 @@ export class Player {
         const self = this;
         const pc = peer.connection;
 
-        self.dropRequest();
+        self.dropPeer(this.peer);
 
         pc.ontrack = ((event) => {
             self.audioElm.srcObject = event.streams[0];
@@ -56,8 +57,9 @@ export class Player {
                 || pc.iceConnectionState === 'disconnected'
                 || pc.iceConnectionState === 'failed'
                 || pc.iceConnectionState === 'closed') {
-                self.dropRequest();
+                self.dropPeer(peer);
             }
+            console.log('Peer connection state changed: ' + pc.iceConnectionState);
         });
 
         self.peer = peer;
@@ -81,7 +83,7 @@ export class Player {
             self.peer.connection.setRemoteDescription(new RTCSessionDescription(JSON.parse(Base64.Decode(response.webRTCKey))));
         } catch (e) {
             console.log('Player: peer connection remote description set failed: ' + e.toString());
-            self.dropRequest();
+            self.dropPeer();
         }
 
         self.mediaResponse = response;
@@ -89,16 +91,20 @@ export class Player {
         return true;
     }
 
-    public dropRequest(): void {
+    public dropPeer(peer?: PeerConnection): void {
         this.stop();
 
-        if (this.peer) {
+        if (peer) {
+            peer.connection.close();
+        } else if (this.peer) {
             this.peer.connection.close();
         }
 
-        this.peer = null;
-        this.mediaRequest = null;
-        this.mediaResponse = null;
+        if (!peer || deepEqual(peer, this.peer)) {
+            this.peer = null;
+            this.mediaRequest = null;
+            this.mediaResponse = null;
+        }
     }
 
     public isCurrentMediaEquals(searchResponse: SearchResponse): boolean {

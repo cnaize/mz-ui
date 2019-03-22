@@ -8,6 +8,15 @@
     width: 100%;
 }
 
+.selected {
+    border-top: 3px;
+    border-bottom: 3px;
+    border-left: 0;
+    border-right: 0;
+    border-color: mat-color($selected-color);
+    border-style: solid;
+}
+
 .media-title {
     font-size: 1.1em !important;
     color: mat-color($reggae-primary);

@@ -59,46 +59,55 @@ export class SearchComponent extends Page {
     }
 
     public addMediaRequest(response: SearchResponse): void {
+        if (this.player.isCurrentMediaEquals(response)) {
+            this.cancelMediaRequest();
+            return;
+        }
+
         const self = this;
         const peer = this.createPeerConnection();
+
+        const owner = new User();
+        owner.username = this.userService.user.username;
+
+        const request = new MediaRequest();
+        request.owner = owner;
+        request.media = response.media;
+        request.mode = self.searchRequest.mode;
+
+        self.player.setMediaRequest(peer, request);
+        self.mediaRequest = request;
 
         let tryN = 0;
         const sendMediaRequest = (() => {
             if (tryN > 5) {
                 console.log('AddMediaRequest: peer local description timeout');
-                peer.connection.close();
+                self.cancelMediaRequest();
                 return;
             }
 
             if (peer.error) {
                 console.log('AddMediaRequest: peer connection error: ' + peer.error);
-                peer.connection.close();
+                self.cancelMediaRequest();
                 return;
             }
 
             if (peer.webRTCKey) {
-                const owner = new User();
-                owner.username = this.userService.user.username;
-
-                const request = new MediaRequest();
-                request.owner = owner;
-                request.media = response.media;
-                request.mode = self.searchRequest.mode;
                 request.webRTCKey = peer.webRTCKey;
-
-                self.player.setMediaRequest(peer, request);
 
                 self.searchService.addMediaRequest(request)
                     .then((r) => {
                         if (r.status !== 201) {
+                            self.cancelMediaRequest();
                             return;
                         }
 
-                        self.mediaRequest = request;
-
                         self.getMediaResponses();
                     })
-                    .catch((e) => console.log('Request AddMediaRequest failed: ' + e.toString()));
+                    .catch((e) => {
+                        self.cancelMediaRequest();
+                        console.log('Request AddMediaRequest failed: ' + e.toString())
+                    });
             } else {
                 tryN++;
                 setTimeout(() => {
@@ -110,11 +119,16 @@ export class SearchComponent extends Page {
         sendMediaRequest();
     }
 
+    private cancelMediaRequest(): void {
+        this.player.dropPeer();
+        this.mediaRequest = null;
+    }
+
     private getMediaResponses(): void {
         const self = this;
 
         if (!self.mediaRequest) {
-            self.mediaRequest = null;
+            self.cancelMediaRequest();
             return;
         }
 
@@ -123,16 +137,16 @@ export class SearchComponent extends Page {
                 let done = false;
 
                 if (r.status === 404) {
-                    this.mediaRequest = null;
-                    this.player.dropRequest();
+                    self.cancelMediaRequest();
                     return;
                 }
 
                 const res: MediaResponseList = r.data;
                 if (r.status === 200 && res.items) {
                     for (const mr of res.items) {
-                        if (!mr.error
-                            && mr.user.username === self.mediaRequest.user.username
+                        if (mr.error != null) {
+                            console.log('GetMediaResponseList failed: ' + mr.error.str);
+                        } else if (mr.user.username === self.mediaRequest.user.username
                             && mr.owner.username === self.mediaRequest.owner.username
                             && mr.media.coreSideID === self.mediaRequest.media.coreSideID
                             && mr.media.rootID === self.mediaRequest.media.rootID) {
@@ -192,7 +206,7 @@ export class SearchComponent extends Page {
 
                     if (res.items.length > 0) {
                         self.searchResponseList.items.push(...res.items);
-                        console.log('Incoming items count: ' + res.items.length);
+                        console.log('Incoming search items count: ' + res.items.length);
                     }
                 }
 
@@ -271,7 +285,7 @@ export class SearchComponent extends Page {
             case 'Public':
                 this.searchRequest.mode = 'public';
                 break;
-            case 'Mine':
+            case 'Own':
                 this.searchRequest.mode = 'private';
                 break;
         }
