@@ -8,11 +8,11 @@ import {SearchResponse} from './model/search-response';
 import {Page} from '../core/page';
 import {MediaRequest} from './model/media-request';
 import {MediaResponseList} from './model/media-response-list';
-import {User} from '../user/model/user';
 import {UserService} from '../user/user.service';
 import {PeerConnection} from '../core/model/peer-connection';
 import {Player} from '../core/player/player';
 import {MatTabChangeEvent} from '@angular/material';
+import {User} from '../user/model/user';
 
 const MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT: number = 20;
 
@@ -67,11 +67,12 @@ export class SearchComponent extends Page {
         const self = this;
         const peer = this.createPeerConnection();
 
-        const owner = new User();
-        owner.username = this.userService.user.username;
+        const user = new User();
+        user.username = self.userService.user.username;
 
         const request = new MediaRequest();
-        request.owner = owner;
+        request.user = user;
+        request.owner = response.owner;
         request.media = response.media;
         request.mode = self.searchRequest.mode;
 
@@ -106,7 +107,7 @@ export class SearchComponent extends Page {
                     })
                     .catch((e) => {
                         self.cancelMediaRequest();
-                        console.log('Request AddMediaRequest failed: ' + e.toString())
+                        console.log('Request AddMediaRequest failed: ' + e.toString());
                     });
             } else {
                 tryN++;
@@ -146,10 +147,10 @@ export class SearchComponent extends Page {
                     for (const mr of res.items) {
                         if (mr.error != null) {
                             console.log('GetMediaResponseList failed: ' + mr.error.str);
-                        } else if (mr.user.username === self.mediaRequest.user.username
-                            && mr.owner.username === self.mediaRequest.owner.username
-                            && mr.media.coreSideID === self.mediaRequest.media.coreSideID
-                            && mr.media.rootID === self.mediaRequest.media.rootID) {
+                        } else if (mr.request.user.username === self.mediaRequest.user.username
+                            && mr.request.owner.username === self.mediaRequest.owner.username
+                            && mr.request.media.coreSideID === self.mediaRequest.media.coreSideID
+                            && mr.request.media.rootID === self.mediaRequest.media.rootID) {
                             if (self.player.setMediaResponse(mr)) {
                                 self.player.play();
                             }
@@ -169,7 +170,7 @@ export class SearchComponent extends Page {
             })
             .catch((e) => {
                 console.log('Request GetMediaResponseList failed: ' + e.toString());
-                self.mediaRequest = null;
+                self.cancelMediaRequest();
             });
     }
 

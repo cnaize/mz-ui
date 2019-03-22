@@ -39,6 +39,11 @@
   border-radius: 0 0 10px 10px;
 }
 
+.sign-form {
+  border-radius: 10px;
+  border: mat-color($reggae-primary) solid;
+}
+
 .desc {
   width: 100%;
   border-radius: 10px;

@@ -1,12 +1,8 @@
-import {User} from '../../user/model/user';
-import {Media} from './media';
 import {Error} from '../../core/model/error';
+import {MediaRequest} from './media-request';
 
 export class MediaResponse {
-    public user: User;
-    public owner: User;
-    public media: Media;
-    public mode: string;
+    public request: MediaRequest;
     public webRTCKey: string;
     public error: Error;
 }

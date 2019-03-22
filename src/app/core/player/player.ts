@@ -72,9 +72,9 @@ export class Player {
         if (!self.peer
             || !self.mediaRequest
             || !response
-            || response.owner.username !== self.mediaRequest.owner.username
-            || response.media.coreSideID !== self.mediaRequest.media.coreSideID
-            || response.media.rootID !== self.mediaRequest.media.rootID) {
+            || response.request.owner.username !== self.mediaRequest.owner.username
+            || response.request.media.coreSideID !== self.mediaRequest.media.coreSideID
+            || response.request.media.rootID !== self.mediaRequest.media.rootID) {
             console.log('Player: invalid media response set: ' + JSON.stringify(response));
             return false;
         }
