@@ -23,7 +23,7 @@
               <mat-label>Password</mat-label>
               <input matInput type="password" name="password" [(ngModel)]="user.password" required>
             </mat-form-field>
-            <button mat-stroked-button color="primary" disableRipple (click)="signin()">Sign In</button>
+            <button class="button-field" mat-stroked-button color="primary" disableRipple (click)="signin()">Sign In</button>
           </div>
         </form>
       </mat-tab>
@@ -42,7 +42,7 @@
               <mat-label>Repeat Password</mat-label>
               <input matInput type="password" name="password1" [(ngModel)]="user.password1" required>
             </mat-form-field>
-            <button mat-stroked-button color="primary" disableRipple (click)="signup()">Sign Up</button>
+            <button class="button-field" mat-stroked-button color="primary" disableRipple (click)="signup()">Sign Up</button>
           </div>
         </form>
       </mat-tab>

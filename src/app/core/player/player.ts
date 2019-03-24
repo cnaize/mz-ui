@@ -19,6 +19,7 @@ export class Player {
     private playing: boolean;
 
     constructor() {
+        this.audioElm.preload = 'auto';
         this.audioElm.autoplay = true;
     }
 
@@ -48,8 +49,17 @@ export class Player {
 
         self.dropPeer(this.peer);
 
-        pc.ontrack = ((event) => {
+        pc.ontrack = ((event: RTCTrackEvent) => {
+            console.log('Peer connection: track received');
             self.audioElm.srcObject = event.streams[0];
+
+            // const el = document.createElement(event.track.kind) as HTMLAudioElement;
+            // el.srcObject = event.streams[0];
+            // el.preload = 'auto';
+            // el.autoplay = true;
+            // el.controls = true;
+            //
+            // document.getElementById('remoteVideos').appendChild(el);
         });
 
         pc.oniceconnectionstatechange = ((e) => {
@@ -59,7 +69,7 @@ export class Player {
                 || pc.iceConnectionState === 'closed') {
                 self.dropPeer(peer);
             }
-            console.log('Peer connection state changed: ' + pc.iceConnectionState);
+            console.log('Peer connection: state changed: ' + pc.iceConnectionState);
         });
 
         self.peer = peer;
@@ -82,7 +92,7 @@ export class Player {
         try {
             self.peer.connection.setRemoteDescription(new RTCSessionDescription(JSON.parse(Base64.Decode(response.webRTCKey))));
         } catch (e) {
-            console.log('Player: peer connection remote description set failed: ' + e.toString());
+            console.log('Peer connection: remote description set failed: ' + e.toString());
             self.dropPeer();
         }
 

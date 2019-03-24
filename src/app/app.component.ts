@@ -13,10 +13,10 @@ export class AppComponent {
 
   constructor(public authGuard: AuthenticatedGuard, private userService: UserService) {
     // TODO: REMOVE IT!!!
-    const u = new User();
-    u.username = 'ni';
-    u.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6Im5pIn0.E04Xxz7ROycss7bo8mGQ8BHZd4_lGIbAc4H9wlXTAIY';
-    this.userService.setUser(u);
+    // const u = new User();
+    // u.username = 'ni';
+    // u.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VybmFtZSI6Im5pIn0.E04Xxz7ROycss7bo8mGQ8BHZd4_lGIbAc4H9wlXTAIY';
+    // this.userService.setUser(u);
   }
 
   public onActivate(page: any): void {

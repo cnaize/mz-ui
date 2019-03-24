@@ -120,6 +120,23 @@ export class SearchComponent extends Page {
         sendMediaRequest();
     }
 
+    public onModeChange(event: MatTabChangeEvent): void {
+        switch (event.tab.textLabel) {
+            case 'Public':
+                this.searchRequest.mode = 'public';
+                break;
+            case 'Own':
+                this.searchRequest.mode = 'private';
+                break;
+        }
+
+        this.addSearchRequest(this.searchRequest.text);
+    }
+
+    public encodeSearchText(text: string): string {
+        return Base64.Encode(text.trim().toLowerCase());
+    }
+
     private cancelMediaRequest(): void {
         this.player.dropPeer();
         this.mediaRequest = null;
@@ -279,23 +296,6 @@ export class SearchComponent extends Page {
             });
 
         return peer;
-    }
-
-    private onModeChange(event: MatTabChangeEvent): void {
-        switch (event.tab.textLabel) {
-            case 'Public':
-                this.searchRequest.mode = 'public';
-                break;
-            case 'Own':
-                this.searchRequest.mode = 'private';
-                break;
-        }
-
-        this.addSearchRequest(this.searchRequest.text);
-    }
-
-    private encodeSearchText(text: string): string {
-        return Base64.Encode(text.trim().toLowerCase());
     }
 
     private deepEqual(actual: any, expected: any): boolean {

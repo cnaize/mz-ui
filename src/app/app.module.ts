@@ -54,8 +54,13 @@ import {PlayerComponent} from './parts/player/player.component';
       RouterModule.forRoot([
           {
               path: '',
-              component: WelcomeComponent,
+              canActivate: [AuthenticatedGuard],
+              redirectTo: 'search',
               pathMatch: 'full',
+          },
+          {
+              path: 'welcome',
+              component: WelcomeComponent,
           },
           {
               path: 'user',
