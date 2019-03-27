@@ -209,6 +209,7 @@ export class SearchComponent extends Page {
                 const res: SearchResponseList = r.data;
                 if (r.status === 404) {
                     self.loadingSearchResponse = false;
+                    self.searchRequestIndex = 0;
                     return;
                 }
 
@@ -229,12 +230,13 @@ export class SearchComponent extends Page {
                 }
 
                 const requestIndex: number = Math.trunc(self.searchResponseList.items.length / MAX_RESPONSE_ITEMS_PER_REQUEST_COUNT);
-                if (self.searchRequestIndex <= requestIndex) {
+                if (self.searchRequestIndex < requestIndex) {
+                    self.searchRequestIndex = requestIndex;
+                    self.loadingSearchResponse = false;
+                } else {
                     setTimeout(() => {
                         self.getSearchResponseList();
                     }, 1000);
-                } else {
-                    self.loadingSearchResponse = false;
                 }
             })
             .catch((e) => {
@@ -256,8 +258,6 @@ export class SearchComponent extends Page {
 
         self.searchService.addSearchRequest(request)
             .then((r) => {
-                self.searchRequestIndex = 0;
-
                 self.getSearchResponseList();
             })
             .catch((e) => {
