@@ -17,7 +17,7 @@ export class BaseService {
             }
             return false;
         };
-        this.http = axios.create({timeout: 500, validateStatus: validStatusFn});
+        this.http = axios.create({timeout: 1000, validateStatus: validStatusFn});
     }
 
     public addToken(token: string): void {
